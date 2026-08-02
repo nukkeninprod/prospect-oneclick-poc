@@ -53,14 +53,14 @@ html, body {
 
 /* ============ Coquille : chat + contenu ============ */
 .shell {
-  display: flex; gap: 22px; max-width: 1380px;
+  display: flex; gap: 22px; max-width: 1560px;
   margin: 0 auto; padding: 24px 20px 60px; align-items: flex-start;
 }
 .page { flex: 1 1 auto; min-width: 0; }
 
 /* ============ Copilote ============ */
 .chat-panel {
-  flex: 0 0 300px; position: sticky; top: 24px;
+  flex: 0 0 600px; position: sticky; top: 24px;
   height: calc(100vh - 48px); min-height: 420px;
   display: flex; flex-direction: column;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
@@ -537,7 +537,7 @@ button:disabled { opacity: 0.45; cursor: default; }
 }
 
 /* ============ Mobile ============ */
-@media (max-width: 900px) {
+@media (max-width: 1180px) {
   .shell { flex-direction: column; }
   .chat-panel {
     position: static; width: 100%; height: 340px; min-height: 0;
