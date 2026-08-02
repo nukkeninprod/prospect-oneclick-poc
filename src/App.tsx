@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Chat, type ChatMsg } from "./Chat";
 import { PROSPECTS } from "./data";
 import { runAnalysis } from "./engine";
 import { LiveFiche } from "./LiveFiche";
@@ -152,13 +153,33 @@ const FILTERS: { key: "all" | RunPhase; label: string }[] = [
 
 const BATCH_CONCURRENCY = 3;
 
+const CHAT_SUGGESTIONS = ["Analyse Fonderie", "Tout analyser", "Montre les écartés"];
+
 export default function App() {
   const [runs, setRuns] = useState<Runs>(loadRuns);
   const [q, setQ] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | RunPhase>("all");
   const [queue, setQueue] = useState<string[]>([]);
+  const [messages, setMessages] = useState<ChatMsg[]>([
+    { id: 0, from: "bot", text: "Bonjour 👋 Je surveille les analyses. Lance une société, ou dis-moi « tout analyser »." },
+  ]);
   const cancels = useRef<Record<string, () => void>>({});
   const manual = useRef<Set<string>>(new Set()); // lancés à la main → auto-ouverture
+  const msgId = useRef(0);
+  const batchActive = useRef(false);
+  // États déjà en mémoire au chargement : ne pas re-notifier dans le chat.
+  const prevPhases = useRef<Record<string, RunPhase> | null>(null);
+  if (prevPhases.current === null) {
+    prevPhases.current = Object.fromEntries(
+      Object.entries(runs).map(([id, r]) => [id, r.phase]),
+    );
+  }
+
+  const pushMsg = (from: ChatMsg["from"], text: string) => {
+    msgId.current += 1;
+    const id = msgId.current;
+    setMessages((m) => [...m, { id, from, text }]);
+  };
 
   useEffect(() => {
     const c = cancels.current;
@@ -168,6 +189,36 @@ export default function App() {
   useEffect(() => {
     saveRuns(runs);
   }, [runs]);
+
+  // Le copilote commente chaque analyse qui se termine.
+  useEffect(() => {
+    for (const p of PROSPECTS) {
+      const ph = runs[p.id]?.phase ?? "idle";
+      const prev = prevPhases.current![p.id] ?? "idle";
+      if (ph === prev) continue;
+      prevPhases.current![p.id] = ph;
+      if (ph === "done") {
+        pushMsg("bot", `✓ ${p.name} : fiche prête — potentiel ${p.potential ?? "à qualifier"} · ${p.signals.length} signaux.`);
+      } else if (ph === "ecarte") {
+        pushMsg("bot", `◦ ${p.name} écarté (santé ${p.healthScore}/100) — un appel économisé.`);
+      } else if (ph === "error") {
+        pushMsg("bot", `✕ ${p.name} : Pappers n'a pas répondu — « Réessayer » quand tu veux.`);
+      }
+    }
+  }, [runs]);
+
+  // Bilan de fin de lot.
+  useEffect(() => {
+    if (!batchActive.current || queue.length > 0) return;
+    const running = PROSPECTS.some((p) => runs[p.id]?.phase === "running");
+    if (running) return;
+    batchActive.current = false;
+    const states = Object.values(runs);
+    const done = states.filter((r) => r.phase === "done").length;
+    const ec = states.filter((r) => r.phase === "ecarte").length;
+    const er = states.filter((r) => r.phase === "error").length;
+    pushMsg("bot", `Lot terminé : ${done} fiches prêtes · ${ec} écartés · ${er} échec${er > 1 ? "s" : ""}. Les filtres en haut te donnent le tri.`);
+  }, [queue, runs]);
 
   const startRun = (p: Prospect) => {
     cancels.current[p.id]?.();
@@ -204,7 +255,9 @@ export default function App() {
     const ids = PROSPECTS.filter(
       (p) => (runs[p.id]?.phase ?? "idle") === "idle" && !queue.includes(p.id),
     ).map((p) => p.id);
+    if (ids.length === 0) return;
     for (const id of ids) manual.current.delete(id); // lot → pas d'auto-ouverture
+    batchActive.current = true;
     setQueue((prev) => [...prev, ...ids]);
   };
 
@@ -224,6 +277,55 @@ export default function App() {
     } catch {
       /* rien à faire */
     }
+  };
+
+  // Commandes scriptées du copilote.
+  const handleChat = (text: string) => {
+    pushMsg("user", text);
+    const t = norm(text);
+    if (t.includes("tout")) {
+      if (PROSPECTS.some((p) => (runs[p.id]?.phase ?? "idle") === "idle")) {
+        launchBatch();
+        pushMsg("bot", "C'est parti — j'analyse tout le lot, 3 en parallèle. Regarde les filtres se remplir.");
+      } else {
+        pushMsg("bot", "Tout est déjà analysé — « Réinitialiser la démo » pour rejouer.");
+      }
+      return;
+    }
+    const target = PROSPECTS.find((p) =>
+      norm(p.name)
+        .split(" ")
+        .some((w) => w.length > 3 && t.includes(w)),
+    );
+    if (target) {
+      launch(target);
+      pushMsg("bot", `J'analyse ${target.name} — santé, signaux, contacts, fiche.`);
+      return;
+    }
+    if (t.includes("ecart")) {
+      setStatusFilter("ecarte");
+      pushMsg("bot", "Voici les écartés par la règle métier (score ≤ 50) — résultat, pas erreur.");
+      return;
+    }
+    if (t.includes("echec")) {
+      setStatusFilter("error");
+      pushMsg("bot", "Voici les échecs techniques — rien n'a été écrit, « Réessayer » relance.");
+      return;
+    }
+    if (t.includes("fiche") || t.includes("pret")) {
+      setStatusFilter("done");
+      pushMsg("bot", "Voici les fiches prêtes.");
+      return;
+    }
+    if (t.includes("reinitialis") || t.includes("reset")) {
+      reset();
+      pushMsg("bot", "Démo réinitialisée — tout est reparti de zéro.");
+      return;
+    }
+    pushMsg(
+      "bot",
+      "Dans ce POC je suis scripté : essaie « tout analyser », un nom de société (« analyse Fonderie »), « montre les écartés / échecs / fiches prêtes » ou « réinitialise ».",
+    );
   };
 
   const statusOf = (p: Prospect): RunPhase => runs[p.id]?.phase ?? "idle";
@@ -247,7 +349,9 @@ export default function App() {
   const echecs = states.filter((r) => r.phase === "error").length;
 
   return (
-    <div className="page">
+    <div className="shell">
+      <Chat messages={messages} suggestions={CHAT_SUGGESTIONS} onSend={handleChat} />
+      <div className="page">
       <header className="header">
         <div>
           <h1>Prospection — flow en un clic</h1>
@@ -341,6 +445,7 @@ export default function App() {
         L'état de la démo est mémorisé dans ce navigateur — « Réinitialiser la démo » pour
         repartir de zéro.
       </footer>
+      </div>
     </div>
   );
 }
