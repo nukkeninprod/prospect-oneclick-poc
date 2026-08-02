@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Compare } from "./Compare";
 import { PROSPECTS } from "./data";
 import { runAnalysis } from "./engine";
 import { LiveFiche } from "./LiveFiche";
@@ -154,7 +153,6 @@ const FILTERS: { key: "all" | RunPhase; label: string }[] = [
 const BATCH_CONCURRENCY = 3;
 
 export default function App() {
-  const [view, setView] = useState<"demo" | "compare">("demo");
   const [runs, setRuns] = useState<Runs>(loadRuns);
   const [q, setQ] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | RunPhase>("all");
@@ -258,32 +256,10 @@ export default function App() {
             timings réels ÷ 10
           </p>
         </div>
-        {view === "demo" && (
-          <button className="btn-secondary" onClick={reset}>Réinitialiser la démo</button>
-        )}
+        <button className="btn-secondary" onClick={reset}>Réinitialiser la démo</button>
       </header>
 
-      <div className="tabs">
-        <button
-          className={`tab ${view === "demo" ? "active" : ""}`}
-          aria-pressed={view === "demo"}
-          onClick={() => setView("demo")}
-        >
-          La démo
-        </button>
-        <button
-          className={`tab ${view === "compare" ? "active" : ""}`}
-          aria-pressed={view === "compare"}
-          onClick={() => setView("compare")}
-        >
-          Avant · après
-        </button>
-      </div>
-
-      {view === "compare" ? (
-        <Compare />
-      ) : (
-        <>
+      <>
           <section className="kpis" aria-label="Compteurs">
             <div className="kpi">
               <div className="kpi-value">{PROSPECTS.length}</div>
@@ -357,7 +333,6 @@ export default function App() {
             )}
           </main>
         </>
-      )}
 
       <footer className="footer">
         Démo statique — aucun appel réseau, aucune donnée réelle. Le vrai flow enchaîne :

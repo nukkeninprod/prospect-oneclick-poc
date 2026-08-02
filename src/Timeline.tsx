@@ -1,4 +1,4 @@
-import type { RunState, StepState } from "./types";
+import type { StepState } from "./types";
 
 export function fmtDuration(ms?: number): string {
   if (!ms) return "";
@@ -20,21 +20,4 @@ export function StepIcon({ status }: { status: StepState["status"] }) {
     default:
       return <span className="step-icon pending" aria-hidden="true" />;
   }
-}
-
-export function Timeline({ run }: { run: RunState }) {
-  return (
-    <ol className="timeline" aria-label="Progression de l'analyse">
-      {run.steps.map((s) => (
-        <li key={s.key} className={`timeline-step ${s.status}`}>
-          <StepIcon status={s.status} />
-          <span className="step-label">{s.label}</span>
-          <span className="step-detail">
-            {s.status === "running" ? "en cours…" : s.detail ?? ""}
-          </span>
-          <span className="step-duration">{fmtDuration(s.durationMs)}</span>
-        </li>
-      ))}
-    </ol>
-  );
 }
