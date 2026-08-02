@@ -8,15 +8,15 @@ function fmtDuration(ms?: number): string {
 function StepIcon({ status }: { status: StepState["status"] }) {
   switch (status) {
     case "done":
-      return <span className="step-icon done" aria-label="terminé">✓</span>;
+      return <span className="step-icon done" role="img" aria-label="terminé">✓</span>;
     case "running":
-      return <span className="step-icon running" aria-label="en cours" />;
+      return <span className="step-icon running" role="img" aria-label="en cours" />;
     case "warning":
-      return <span className="step-icon warning" aria-label="avertissement">!</span>;
+      return <span className="step-icon warning" role="img" aria-label="avertissement">!</span>;
     case "stopped":
-      return <span className="step-icon stopped" aria-label="écarté">◦</span>;
+      return <span className="step-icon stopped" role="img" aria-label="écarté">◦</span>;
     case "error":
-      return <span className="step-icon error" aria-label="échec">✕</span>;
+      return <span className="step-icon error" role="img" aria-label="échec">✕</span>;
     default:
       return <span className="step-icon pending" aria-hidden="true" />;
   }

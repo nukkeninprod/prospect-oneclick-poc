@@ -4,7 +4,7 @@
   --surface: #fcfcfb;
   --ink: #0b0b0b;
   --ink-2: #52514e;
-  --ink-muted: #898781;
+  --ink-muted: #6e6c66; /* ≥4.5:1 sur --surface (AA petit texte) */
   --hairline: #e1e0d9;
   --ring: rgba(11, 11, 11, 0.10);
 
@@ -108,8 +108,8 @@ button {
 }
 button:disabled { opacity: 0.55; cursor: default; }
 
-.btn-primary { background: var(--accent); color: #fff; }
-.btn-primary:not(:disabled):hover { background: var(--accent-strong); }
+.btn-primary { background: var(--accent-strong); color: #fff; }
+.btn-primary:not(:disabled):hover { background: #1c5cab; }
 
 .btn-secondary { background: var(--surface); color: var(--ink); border-color: var(--ring); }
 .btn-secondary:not(:disabled):hover { border-color: var(--ink-muted); }

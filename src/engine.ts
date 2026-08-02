@@ -52,6 +52,10 @@ function script(p: Prospect): TimedEvent[] {
   if (p.scenario === "api_error") {
     push(3200, (s) => {
       set(s, "sante", { status: "error", detail: "Pappers ne répond pas (timeout après 30 s)" });
+      set(s, "gate", { detail: "non lancé" });
+      set(s, "signaux", { detail: "non lancé" });
+      set(s, "contacts", { detail: "non lancé" });
+      set(s, "fiche", { detail: "non lancée" });
       return { phase: "error" };
     });
     return ev;
@@ -86,8 +90,9 @@ function script(p: Prospect): TimedEvent[] {
     if (p.scenario === "below_threshold") {
       push(600, (s) => {
         set(s, "gate", { status: "stopped", detail: `Écarté — santé financière ${score}/100 (seuil : 50)` });
-        set(s, "signaux", { status: "pending", detail: "non lancé" });
-        set(s, "contacts", { status: "pending", detail: "non lancé" });
+        set(s, "signaux", { detail: "non lancé" });
+        set(s, "contacts", { detail: "non lancé" });
+        set(s, "fiche", { detail: "non lancée" });
         return { phase: "ecarte" };
       });
       return ev;

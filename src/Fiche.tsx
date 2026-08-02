@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Contact, Prospect } from "./types";
 
 function initials(name: string): string {
@@ -14,11 +14,14 @@ function initials(name: string): string {
 
 function ContactCard({ contact }: { contact: Contact }) {
   const [state, setState] = useState<"hidden" | "loading" | "shown">("hidden");
+  const timer = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => () => clearTimeout(timer.current), []);
 
   const reveal = () => {
     if (state !== "hidden") return;
     setState("loading");
-    setTimeout(() => setState("shown"), 800);
+    timer.current = setTimeout(() => setState("shown"), 800);
   };
 
   return (
@@ -89,7 +92,7 @@ export function Fiche({ prospect, healthUnknown }: { prospect: Prospect; healthU
                 <span className="signal-date">{s.date}</span>
                 <span className="signal-title">{s.title}</span>
                 <span className="signal-source">
-                  {s.source} <a href="#" onClick={(e) => e.preventDefault()} title="Lien source (démo)">↗</a>
+                  {s.source} <span aria-hidden="true" title="Lien source (démo)">↗</span>
                 </span>
               </li>
             ))}

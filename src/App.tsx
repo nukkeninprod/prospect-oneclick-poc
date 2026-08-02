@@ -39,10 +39,12 @@ function ProspectRow({
   const [open, setOpen] = useState(false);
   const finished = run && run.phase !== "idle" && run.phase !== "running";
 
-  // La ligne s'ouvre au lancement et reste ouverte sur le résultat.
+  // La ligne s'ouvre aux transitions de phase (pas à chaque tick du moteur,
+  // sinon « Replier » serait annulé par le tick suivant pendant l'analyse).
+  const phase = run?.phase;
   useEffect(() => {
-    if (run && run.phase !== "idle") setOpen(true);
-  }, [run]);
+    if (phase && phase !== "idle") setOpen(true);
+  }, [phase]);
 
   const launched = run && run.phase !== "idle";
 
@@ -123,8 +125,11 @@ export default function App() {
   };
 
   const reset = () => {
-    Object.values(cancels.current).forEach((fn) => fn());
-    cancels.current = {};
+    // Vider EN PLACE : le cleanup d'unmount a capturé cette référence.
+    for (const id of Object.keys(cancels.current)) {
+      cancels.current[id]();
+      delete cancels.current[id];
+    }
     setRuns({});
   };
 
