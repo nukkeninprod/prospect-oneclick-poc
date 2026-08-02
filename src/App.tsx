@@ -4,6 +4,7 @@ import type { Criteria, Ranked, RankResult } from "./brain";
 import { Chat, type ChatMsg } from "./Chat";
 import { runAnalysis } from "./engine";
 import { LiveFiche } from "./LiveFiche";
+import { getStoredKey, llmParse, setStoredKey } from "./llm";
 import { MARKET, TOTAL_SIGNALS } from "./market";
 import type { Prospect, RunPhase, RunState } from "./types";
 
@@ -148,6 +149,8 @@ export default function App() {
       text: `${MARKET.length} sociétés sous veille, ${TOTAL_SIGNALS} signaux. Dis-moi ce qu'il te faut.`,
     },
   ]);
+  const [llmKey, setLlmKey] = useState<string | null>(getStoredKey);
+  const [busy, setBusy] = useState(false);
 
   const cancels = useRef<Record<string, () => void>>({});
   const msgId = useRef(0);
@@ -242,8 +245,8 @@ export default function App() {
     return res;
   };
 
-  const handleChat = (text: string) => {
-    pushMsg("user", text);
+  /** Repli scripté (pas de clé, ou Claude injoignable). */
+  const scriptedHandle = (text: string) => {
     const { criteria: c2, understood, isReset, matchedAnything } = parse(text, criteria);
 
     if (isReset) {
@@ -265,6 +268,47 @@ export default function App() {
     setRefined(true);
     const res = compose(c2, dismissed);
     pushMsg("bot", ackFor(understood, res, c2));
+  };
+
+  const handleChat = async (text: string) => {
+    pushMsg("user", text);
+
+    if (!llmKey) {
+      scriptedHandle(text);
+      return;
+    }
+
+    // Vraie LLM : Claude traduit le besoin en critères (tool use strict),
+    // le classement reste local et déterministe.
+    setBusy(true);
+    try {
+      const history = [...messages, { id: -1, from: "user" as const, text }];
+      const { criteria: c2, reply, reset: isReset } = await llmParse(llmKey, history, criteria);
+      if (isReset) {
+        setCriteria({ ...EMPTY_CRITERIA });
+        setDismissed(new Set());
+        setResult(rank({ ...EMPTY_CRITERIA }, new Set()));
+        setRefined(false);
+        pushMsg("bot", reply);
+      } else {
+        setCriteria(c2);
+        setRefined(true);
+        const res = compose(c2, dismissed);
+        const sweep = Math.min(c2.topN, res.matchCount);
+        pushMsg(
+          "bot",
+          res.matchCount === 0
+            ? `${reply} Aucune société ne correspond — élargis un critère et je recompose.`
+            : `${reply} ${res.matchCount} ${res.matchCount > 1 ? "sociétés correspondent" : "société correspond"} sur ${MARKET.length} — ${res.excludedCount} écartées d'office. J'analyse le top ${sweep} d'une traite.`,
+        );
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      pushMsg("bot", `⚠️ Claude injoignable (${msg.slice(0, 80)}) — je bascule en mode scripté.`);
+      scriptedHandle(text);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const dismissOne = (id: string) => {
@@ -304,7 +348,20 @@ export default function App() {
 
   return (
     <div className="shell">
-      <Chat messages={messages} suggestions={CHAT_SUGGESTIONS} onSend={handleChat} />
+      <Chat
+        messages={messages}
+        suggestions={CHAT_SUGGESTIONS}
+        busy={busy}
+        llmActive={!!llmKey}
+        onSend={handleChat}
+        onSetKey={(k) => {
+          setStoredKey(k);
+          setLlmKey(k);
+          pushMsg("bot", k
+            ? "Claude est branché — ta clé reste dans ce navigateur, jamais dans le code. Parle-moi librement."
+            : "Clé retirée — je repasse en mode scripté.");
+        }}
+      />
       <div className="page">
         <header className="header">
           <div>
