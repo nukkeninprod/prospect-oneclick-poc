@@ -234,6 +234,65 @@ button:disabled { opacity: 0.55; cursor: default; }
   font-size: 12.5px; color: var(--ink-muted);
 }
 
+/* ============ Données financières ============ */
+.financiere { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+
+.fin-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.stat-chip {
+  display: inline-flex; align-items: baseline; gap: 7px;
+  background: var(--page); border: 1px solid var(--hairline);
+  border-radius: 10px; padding: 7px 12px; font-size: 13px;
+}
+.stat-label { color: var(--ink-2); font-size: 12px; }
+.stat-value { font-weight: 650; font-variant-numeric: tabular-nums; }
+.stat-delta { font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.delta-up { color: var(--good-text); }
+.delta-down { color: var(--critical-text); }
+
+.fin-toggle { display: flex; gap: 6px; }
+
+.finchart { margin: 0; }
+.finchart svg { width: 100%; height: auto; display: block; }
+.finchart .grid { stroke: var(--hairline); stroke-width: 1; }
+.finchart .tick { fill: var(--ink-muted); font-size: 11px; }
+.finchart .endlabel { fill: var(--ink-2); font-size: 11.5px; font-weight: 600; }
+.finchart .ca-area { fill: rgba(42, 120, 214, 0.12); }
+.finchart .ca-line { fill: none; stroke: #2a78d6; stroke-width: 2; }
+.finchart .ca-dot { fill: #2a78d6; }
+.finchart .res-line { fill: none; stroke: #1baf7a; stroke-width: 2; }
+.finchart .res-dot { fill: #1baf7a; }
+.fin-legend {
+  display: flex; gap: 18px; justify-content: center; margin-top: 4px;
+  font-size: 12.5px; color: var(--ink-2);
+}
+.fin-legend .dot {
+  display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+  margin-right: 5px;
+}
+.dot-ca { background: #2a78d6; }
+.dot-res { background: #1baf7a; }
+
+.fin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.fin-table th {
+  text-align: right; font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--ink-2); padding: 6px 10px;
+}
+.fin-table th:first-child, .fin-table td:first-child { text-align: left; }
+.fin-table td {
+  text-align: right; padding: 6px 10px; border-top: 1px solid var(--hairline);
+  font-variant-numeric: tabular-nums;
+}
+.fin-table .neg { color: var(--critical-text); font-weight: 600; }
+
+.etab-list { display: flex; flex-direction: column; }
+.etab-row {
+  display: flex; align-items: center; gap: 12px; padding: 6px 0;
+  border-top: 1px solid var(--hairline); font-size: 13.5px;
+}
+.etab-row:first-child { border-top: none; }
+.etab-name { font-weight: 550; }
+.etab-city { color: var(--ink-muted); font-size: 12.5px; margin-left: auto; }
+
 /* ============ Onglets ============ */
 .tabs { display: flex; gap: 8px; margin-bottom: 18px; }
 .tab { background: var(--surface); border: 1px solid var(--ring); color: var(--ink-2); }

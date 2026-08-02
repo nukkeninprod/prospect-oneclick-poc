@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import type { Contact, Prospect } from "./types";
+import { FinChart, fmtEur } from "./FinChart";
+import type { Contact, Financials, Prospect } from "./types";
 
 function initials(name: string): string {
   return name
@@ -42,6 +43,109 @@ function ContactCard({ contact }: { contact: Contact }) {
   );
 }
 
+function StatChip({
+  label,
+  value,
+  deltaPct,
+}: {
+  label: string;
+  value: string;
+  deltaPct: number | null;
+}) {
+  return (
+    <span className="stat-chip">
+      <span className="stat-label">{label}</span>
+      <span className="stat-value">{value}</span>
+      {deltaPct !== null && (
+        <span className={`stat-delta ${deltaPct >= 0 ? "delta-up" : "delta-down"}`}>
+          {deltaPct >= 0 ? "↗" : "↘"} {Math.abs(deltaPct).toFixed(0)} %
+        </span>
+      )}
+    </span>
+  );
+}
+
+function delta(last: number, prev: number): number | null {
+  return prev === 0 ? null : ((last - prev) / Math.abs(prev)) * 100;
+}
+
+/** La section « Données financières » complète : chips, graphique/tableau. */
+function Financiere({ f }: { f: Financials }) {
+  const [tab, setTab] = useState<"graph" | "table">("graph");
+  const ex = f.exercices;
+  const last = ex[ex.length - 1];
+  const prev = ex[ex.length - 2];
+
+  return (
+    <div className="financiere">
+      <div className="fin-chips">
+        <StatChip label="Dernier CA" value={fmtEur(last.ca)} deltaPct={prev ? delta(last.ca, prev.ca) : null} />
+        <StatChip label="Résultat net" value={fmtEur(last.resultat)} deltaPct={prev ? delta(last.resultat, prev.resultat) : null} />
+        <StatChip label="Marge nette" value={`${((last.resultat / last.ca) * 100).toFixed(1).replace(".", ",")} %`} deltaPct={null} />
+      </div>
+      <div className="fin-toggle" role="group" aria-label="Affichage des données financières">
+        <button className={`chip ${tab === "graph" ? "active" : ""}`} aria-pressed={tab === "graph"} onClick={() => setTab("graph")}>
+          Graphique
+        </button>
+        <button className={`chip ${tab === "table" ? "active" : ""}`} aria-pressed={tab === "table"} onClick={() => setTab("table")}>
+          Tableau détaillé
+        </button>
+      </div>
+      {tab === "graph" ? (
+        <FinChart exercices={ex} />
+      ) : (
+        <table className="fin-table">
+          <thead>
+            <tr>
+              <th scope="col">Exercice</th>
+              <th scope="col">CA</th>
+              <th scope="col">Résultat net</th>
+              <th scope="col">Marge nette</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[...ex].reverse().map((e) => (
+              <tr key={e.year}>
+                <td>{e.year}</td>
+                <td>{fmtEur(e.ca)}</td>
+                <td className={e.resultat < 0 ? "neg" : ""}>{fmtEur(e.resultat)}</td>
+                <td className={e.resultat < 0 ? "neg" : ""}>
+                  {((e.resultat / e.ca) * 100).toFixed(1).replace(".", ",")} %
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
+
+function Etablissements({ f }: { f: Financials }) {
+  const actifs = f.etablissements.filter((e) => e.status === "actif").length;
+  const inactifs = f.etablissements.length - actifs;
+  return (
+    <>
+      <h4>
+        Établissements{" "}
+        <span className="muted">
+          — Source : Pappers · {actifs} actif{actifs > 1 ? "s" : ""}
+          {inactifs > 0 ? ` · ${inactifs} inactif${inactifs > 1 ? "s" : ""}` : ""}
+        </span>
+      </h4>
+      <div className="etab-list">
+        {f.etablissements.map((e) => (
+          <div className="etab-row" key={`${e.name}-${e.city}`}>
+            <span className="etab-name">{e.name}</span>
+            <span className="etab-city">{e.city}</span>
+            {e.status === "inactif" && <span className="badge badge-unknown">inactif</span>}
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
 export function Fiche({ prospect, healthUnknown }: { prospect: Prospect; healthUnknown: boolean }) {
   const [showOthers, setShowOthers] = useState(false);
   const p = prospect;
@@ -56,29 +160,44 @@ export function Fiche({ prospect, healthUnknown }: { prospect: Prospect; healthU
         </div>
       )}
 
-      {/* 2. Santé */}
+      {/* 2. Données financières */}
       <section className="fiche-section">
-        <h4>Santé financière</h4>
-        {healthUnknown || p.healthScore === null ? (
+        <h4>
+          Données financières{" "}
+          <span className="muted">
+            — Source : Pappers{p.financials ? ` · ${p.financials.exercices.length} exercices` : ""}
+          </span>
+        </h4>
+        {healthUnknown || p.healthScore === null || !p.financials ? (
           <div className="health-row">
             <span className="badge badge-unknown">? Santé inconnue</span>
             <span className="health-source">Aucune donnée Pappers pour ce numéro d'entreprise</span>
           </div>
         ) : (
-          <div className="health-row">
-            <span className={`badge ${p.healthScore > 50 ? "badge-good" : "badge-risk"}`}>
-              {p.healthScore > 50 ? "✓" : "!"} {p.healthBand} · {p.healthScore}/100
-            </span>
-            <span className="health-meter" role="img" aria-label={`Score ${p.healthScore} sur 100`}>
-              <span
-                className={`health-meter-fill ${p.healthScore > 50 ? "good" : "risk"}`}
-                style={{ width: `${p.healthScore}%` }}
-              />
-            </span>
-            <span className="health-source">Source : Pappers · 2 août 2026</span>
-          </div>
+          <>
+            <div className="health-row">
+              <span className={`badge ${p.healthScore > 50 ? "badge-good" : "badge-risk"}`}>
+                {p.healthScore > 50 ? "✓" : "!"} {p.healthBand} · {p.healthScore}/100
+              </span>
+              <span className="health-meter" role="img" aria-label={`Score ${p.healthScore} sur 100`}>
+                <span
+                  className={`health-meter-fill ${p.healthScore > 50 ? "good" : "risk"}`}
+                  style={{ width: `${p.healthScore}%` }}
+                />
+              </span>
+              <span className="health-source">Source : Pappers · 2 août 2026</span>
+            </div>
+            <Financiere f={p.financials} />
+          </>
         )}
       </section>
+
+      {/* 2 bis. Établissements */}
+      {!healthUnknown && p.financials && (
+        <section className="fiche-section">
+          <Etablissements f={p.financials} />
+        </section>
+      )}
 
       {/* 3. Signaux */}
       <section className="fiche-section">

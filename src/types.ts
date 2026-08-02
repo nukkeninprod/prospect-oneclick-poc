@@ -19,6 +19,24 @@ export interface Signal {
   source: string; // "L'Echo", "LinkedIn", "Le Soir", "Site web"
 }
 
+/** Un exercice comptable (montants en k€), calqué sur l'historique Pappers. */
+export interface Exercice {
+  year: number;
+  ca: number;
+  resultat: number;
+}
+
+export interface Etablissement {
+  name: string;
+  city: string;
+  status: "actif" | "inactif";
+}
+
+export interface Financials {
+  exercices: Exercice[]; // du plus ancien au plus récent
+  etablissements: Etablissement[];
+}
+
 export interface Prospect {
   id: string;
   name: string;
@@ -30,6 +48,7 @@ export interface Prospect {
   scenario: Scenario;
   healthScore: number | null; // null = pas de données Pappers
   healthBand: "Solide" | "À risque" | "Inconnue";
+  financials?: Financials; // absent si pas de données Pappers
   whyCallNow: string; // la ligne qui vend
   signals: Signal[];
   contacts: Contact[];

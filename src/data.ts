@@ -1,4 +1,19 @@
-import type { Prospect } from "./types";
+import type { Financials, Prospect } from "./types";
+
+/** Petit constructeur : exercices [année, CA k€, résultat k€] + établissements. */
+function fin(
+  rows: [number, number, number][],
+  etabs: [string, string, ("actif" | "inactif")?][],
+): Financials {
+  return {
+    exercices: rows.map(([year, ca, resultat]) => ({ year, ca, resultat })),
+    etablissements: etabs.map(([name, city, status]) => ({
+      name,
+      city,
+      status: status ?? "actif",
+    })),
+  };
+}
 
 /**
  * Données 100 % fictives — sociétés, numéros BCE, personnes et emails inventés.
@@ -31,6 +46,10 @@ export const PROSPECTS: Prospect[] = [
       { name: "Julien Warnier", role: "HR Officer", roleGroup: "RH", email: "j.warnier@fonderie-delcourt.example" },
     ],
     otherContactsCount: 43,
+    financials: fin(
+      [[2021, 9800, 320], [2022, 10400, 410], [2023, 11600, 520], [2024, 12100, 480], [2025, 12800, 610]],
+      [["Siège & fonderie", "Charleroi"], ["Atelier de Marchienne", "Marchienne-au-Pont"], ["Ancien dépôt", "Gilly", "inactif"]],
+    ),
   },
   {
     id: "p02",
@@ -57,6 +76,10 @@ export const PROSPECTS: Prospect[] = [
       { name: "Awa Diallo", role: "HR Business Partner", roleGroup: "RH", email: "a.diallo@transwal.example" },
     ],
     otherContactsCount: 87,
+    financials: fin(
+      [[2021, 18400, 620], [2022, 21000, 850], [2023, 24500, 1100], [2024, 27800, 1350], [2025, 31200, 1680]],
+      [["Siège & dispatching", "Liège"], ["Hub Hauts-Sarts", "Herstal"], ["Dépôt", "Verviers", "inactif"]],
+    ),
   },
   {
     id: "p03",
@@ -122,6 +145,10 @@ export const PROSPECTS: Prospect[] = [
       { name: "Céline Devos", role: "Talent Acquisition Lead", roleGroup: "RH", email: "c.devos@infragreen.example" },
     ],
     otherContactsCount: 31,
+    financials: fin(
+      [[2021, 6200, 180], [2022, 8900, 340], [2023, 11300, 520], [2024, 13600, 610], [2025, 16400, 890]],
+      [["Siège", "Mons"], ["Agence chantiers", "Charleroi"]],
+    ),
   },
   {
     id: "p06",
@@ -142,6 +169,10 @@ export const PROSPECTS: Prospect[] = [
     ],
     contacts: [],
     otherContactsCount: 0,
+    financials: fin(
+      [[2021, 2100, 95], [2022, 2400, 110], [2023, 2700, 124], [2024, 3100, 150], [2025, 3400, 170]],
+      [["Atelier & magasin", "Tournai"], ["Boulangerie", "Ath"], ["Boulangerie", "Leuze-en-Hainaut"]],
+    ),
   },
   {
     id: "p07",
@@ -183,6 +214,10 @@ export const PROSPECTS: Prospect[] = [
       { name: "Luc Thiry", role: "Gestionnaire paie & flotte", roleGroup: "Payroll", email: "l.thiry@bodart-cie.example" },
     ],
     otherContactsCount: 19,
+    financials: fin(
+      [[2021, 7400, 210], [2022, 7900, 260], [2023, 8600, 190], [2024, 9300, 310], [2025, 9900, 360]],
+      [["Siège & garage", "Arlon"], ["Dépôt", "Weyler"]],
+    ),
   },
   {
     id: "p09",
@@ -209,6 +244,10 @@ export const PROSPECTS: Prospect[] = [
       { name: "Dries Callens", role: "HR-verantwoordelijke", roleGroup: "RH", email: "d.callens@werrens.example" },
     ],
     otherContactsCount: 52,
+    financials: fin(
+      [[2021, 8800, 420], [2022, 9600, 510], [2023, 10300, 380], [2024, 11500, 560], [2025, 12400, 640]],
+      [["Siège & production", "Gand"], ["Magasin d'usine", "Gand"]],
+    ),
   },
   {
     id: "p10",
@@ -233,6 +272,10 @@ export const PROSPECTS: Prospect[] = [
       { name: "Rachid Benali", role: "HR Generalist", roleGroup: "RH", email: "r.benali@ateliers-marechal.example" },
     ],
     otherContactsCount: 12,
+    financials: fin(
+      [[2021, 4100, 150], [2022, 4500, 180], [2023, 4200, -120], [2024, 4600, 90], [2025, 5100, 210]],
+      [["Siège & ateliers", "Namur"]],
+    ),
   },
   {
     id: "p11",
@@ -256,6 +299,10 @@ export const PROSPECTS: Prospect[] = [
       { name: "Fabienne Docquier", role: "Secrétariat & comptabilité", roleGroup: "Comptabilité", email: "f.docquier@vet-etangs.example" },
     ],
     otherContactsCount: 7,
+    financials: fin(
+      [[2021, 1350, 60], [2022, 1420, 55], [2023, 1480, 70], [2024, 1560, 75], [2025, 1650, 85]],
+      [["Clinique", "Wavre"]],
+    ),
   },
   {
     id: "p12",
@@ -279,6 +326,10 @@ export const PROSPECTS: Prospect[] = [
       { name: "Aurélie Mathieu", role: "Office manager (compta & paie)", roleGroup: "Comptabilité", email: "a.mathieu@brasserieduperron.example" },
     ],
     otherContactsCount: 5,
+    financials: fin(
+      [[2021, 980, 40], [2022, 1150, 60], [2023, 1400, 85], [2024, 1650, 100], [2025, 1950, 130]],
+      [["Brasserie", "Huy"], ["Taproom", "Huy"]],
+    ),
   },
   {
     id: "p13",
@@ -319,5 +370,9 @@ export const PROSPECTS: Prospect[] = [
       { name: "Lore Vanhee", role: "Personeelszaken", roleGroup: "RH", email: "l.vanhee@vandamme-groen.example" },
     ],
     otherContactsCount: 9,
+    financials: fin(
+      [[2021, 2900, 130], [2022, 3200, 150], [2023, 3400, 160], [2024, 3700, 175], [2025, 3950, 190]],
+      [["Siège & pépinières", "Roulers"], ["Serres", "Izegem"]],
+    ),
   },
 ];
