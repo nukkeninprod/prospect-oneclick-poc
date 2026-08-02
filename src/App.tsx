@@ -44,9 +44,13 @@ function norm(s: string): string {
   return s.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
 }
 
-function phaseBadge(run: RunState | undefined, p: Prospect) {
+function phaseBadge(run: RunState | undefined, p: Prospect, queued: boolean) {
   if (!run || run.phase === "idle") {
-    return <span className="badge badge-neutral">À analyser</span>;
+    return queued ? (
+      <span className="badge badge-running">En file d'attente…</span>
+    ) : (
+      <span className="badge badge-neutral">À analyser</span>
+    );
   }
   switch (run.phase) {
     case "running":
@@ -67,10 +71,14 @@ function phaseBadge(run: RunState | undefined, p: Prospect) {
 function ProspectRow({
   p,
   run,
+  queued,
+  autoOpen,
   onLaunch,
 }: {
   p: Prospect;
   run: RunState | undefined;
+  queued: boolean;
+  autoOpen: boolean;
   onLaunch: (p: Prospect) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -78,13 +86,14 @@ function ProspectRow({
 
   // La ligne s'ouvre aux TRANSITIONS de phase uniquement : pas à chaque tick
   // du moteur (sinon « Replier » serait annulé), pas au montage (sinon les
-  // lignes restaurées du stockage local s'ouvriraient toutes au rechargement).
+  // lignes restaurées du stockage local s'ouvriraient toutes au rechargement),
+  // et jamais en mode lot (14 lignes ouvertes d'un coup = illisible).
   const phase = run?.phase;
   const prevPhase = useRef(phase);
   useEffect(() => {
-    if (phase !== prevPhase.current && phase && phase !== "idle") setOpen(true);
+    if (autoOpen && phase !== prevPhase.current && phase && phase !== "idle") setOpen(true);
     prevPhase.current = phase;
-  }, [phase]);
+  }, [phase, autoOpen]);
 
   const launched = run && run.phase !== "idle";
 
@@ -97,7 +106,7 @@ function ProspectRow({
             {p.enterpriseNumber} · {p.city} ({p.province}) · {p.sector} · {p.workerBand} trav.
           </div>
         </div>
-        <div className="row-status">{phaseBadge(run, p)}</div>
+        <div className="row-status">{phaseBadge(run, p, queued)}</div>
         <div className="row-actions">
           {launched && (
             <button
@@ -116,9 +125,9 @@ function ProspectRow({
             <button
               className="btn-primary"
               onClick={() => onLaunch(p)}
-              disabled={run?.phase === "running"}
+              disabled={run?.phase === "running" || queued}
             >
-              {run?.phase === "running" ? "Analyse…" : "Lancer l'analyse"}
+              {run?.phase === "running" ? "Analyse…" : queued ? "En file…" : "Lancer l'analyse"}
             </button>
           )}
         </div>
@@ -142,12 +151,16 @@ const FILTERS: { key: "all" | RunPhase; label: string }[] = [
   { key: "error", label: "Échecs" },
 ];
 
+const BATCH_CONCURRENCY = 3;
+
 export default function App() {
   const [view, setView] = useState<"demo" | "compare">("demo");
   const [runs, setRuns] = useState<Runs>(loadRuns);
   const [q, setQ] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | RunPhase>("all");
+  const [queue, setQueue] = useState<string[]>([]);
   const cancels = useRef<Record<string, () => void>>({});
+  const manual = useRef<Set<string>>(new Set()); // lancés à la main → auto-ouverture
 
   useEffect(() => {
     const c = cancels.current;
@@ -158,14 +171,43 @@ export default function App() {
     saveRuns(runs);
   }, [runs]);
 
-  const launch = (p: Prospect) => {
-    // Revenir sur « Tous » : sous un filtre de statut, la ligne lancée
-    // changerait de statut, sortirait du filtre et disparaîtrait en pleine analyse.
-    setStatusFilter("all");
+  const startRun = (p: Prospect) => {
     cancels.current[p.id]?.();
     cancels.current[p.id] = runAnalysis(p, (rs) =>
       setRuns((prev) => ({ ...prev, [p.id]: rs })),
     );
+  };
+
+  // File d'attente du mode lot : max BATCH_CONCURRENCY analyses en parallèle,
+  // la suivante part dès qu'une place se libère.
+  useEffect(() => {
+    if (queue.length === 0) return;
+    const running = PROSPECTS.filter((p) => runs[p.id]?.phase === "running").length;
+    const slots = BATCH_CONCURRENCY - running;
+    if (slots <= 0) return;
+    const toStart = queue.slice(0, slots);
+    setQueue((prev) => prev.filter((id) => !toStart.includes(id)));
+    for (const id of toStart) {
+      const p = PROSPECTS.find((x) => x.id === id);
+      if (p) startRun(p);
+    }
+  }, [queue, runs]);
+
+  const launch = (p: Prospect) => {
+    // Lancement manuel : la ligne s'auto-ouvrira, et on revient sur « Tous »
+    // (sous un filtre de statut, la ligne changerait de statut et disparaîtrait).
+    manual.current.add(p.id);
+    setStatusFilter("all");
+    setQueue((prev) => prev.filter((id) => id !== p.id));
+    startRun(p);
+  };
+
+  const launchBatch = () => {
+    const ids = PROSPECTS.filter(
+      (p) => (runs[p.id]?.phase ?? "idle") === "idle" && !queue.includes(p.id),
+    ).map((p) => p.id);
+    for (const id of ids) manual.current.delete(id); // lot → pas d'auto-ouverture
+    setQueue((prev) => [...prev, ...ids]);
   };
 
   const reset = () => {
@@ -177,6 +219,8 @@ export default function App() {
     setRuns({});
     setQ("");
     setStatusFilter("all");
+    setQueue([]);
+    manual.current.clear();
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch {
@@ -280,6 +324,18 @@ export default function App() {
                 </button>
               ))}
             </div>
+            <div className="batch-controls">
+              {queue.length > 0 && (
+                <span className="badge badge-running">File : {queue.length}</span>
+              )}
+              <button
+                className="btn-primary"
+                onClick={launchBatch}
+                disabled={counts.idle === 0 || queue.length > 0}
+              >
+                {queue.length > 0 ? "Analyse du lot…" : `Tout analyser · ${counts.idle}`}
+              </button>
+            </div>
           </div>
 
           <main className="list">
@@ -289,7 +345,14 @@ export default function App() {
               </p>
             ) : (
               visible.map((p) => (
-                <ProspectRow key={p.id} p={p} run={runs[p.id]} onLaunch={launch} />
+                <ProspectRow
+                  key={p.id}
+                  p={p}
+                  run={runs[p.id]}
+                  queued={queue.includes(p.id)}
+                  autoOpen={manual.current.has(p.id)}
+                  onLaunch={launch}
+                />
               ))
             )}
           </main>

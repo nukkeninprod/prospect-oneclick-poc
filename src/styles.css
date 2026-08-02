@@ -453,6 +453,7 @@ button:disabled { opacity: 0.55; cursor: default; }
 }
 .chip.active { background: var(--accent-tint); border-color: var(--accent); color: var(--accent-strong); font-weight: 600; }
 .empty-list { text-align: center; color: var(--ink-2); padding: 30px 0; font-size: 13.5px; }
+.batch-controls { display: flex; align-items: center; gap: 8px; margin-left: auto; }
 
 /* ============ Avant · après ============ */
 .insight {

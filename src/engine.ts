@@ -136,7 +136,7 @@ function script(p: Prospect): TimedEvent[] {
   } else {
     push(1600, (s) => {
       const n = p.contacts.length;
-      const ann = p.employees?.length ?? 0;
+      const ann = p.otherContactsCount || (p.employees?.length ?? 0);
       set(s, "contacts", {
         status: "done",
         detail: `${n} rôle${n > 1 ? "s" : ""} clé${n > 1 ? "s" : ""} · ${ann} dans l'annuaire`,

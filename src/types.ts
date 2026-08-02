@@ -107,6 +107,7 @@ export interface Prospect {
   whyCallNow: string; // la ligne qui vend
   signals: Signal[];
   contacts: Contact[];
+  /** Taille TOTALE de l'annuaire LinkedIn — `employees` n'en est qu'un aperçu. */
   otherContactsCount: number;
 }
 

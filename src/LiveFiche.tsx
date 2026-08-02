@@ -78,10 +78,12 @@ function bodyFor(s: StepState, p: Prospect): React.ReactNode | null {
       if (s.status === "done" || s.status === "warning") {
         return (
           <>
-            <ContactsBlock contacts={p.contacts} otherCount={p.otherContactsCount} />
+            <ContactsBlock contacts={p.contacts} />
             {/* Pas d'encadré « relancez le scraping » quand la page LinkedIn
                 n'existe pas : le message ContactsBlock suffit. */}
-            {(p.employees?.length ?? 0) > 0 && <AnnuaireBlock employees={p.employees!} />}
+            {(p.employees?.length ?? 0) > 0 && (
+              <AnnuaireBlock employees={p.employees!} total={p.otherContactsCount} />
+            )}
             {p.officers && p.officers.length > 0 && <OfficersBlock officers={p.officers} />}
           </>
         );

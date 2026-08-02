@@ -240,7 +240,7 @@ export function NewsBlock({ news }: { news: NewsItem[] }) {
 
 /* ———— Annuaire LinkedIn (ProspectDirectory) ———— */
 
-export function AnnuaireBlock({ employees }: { employees: Employee[] }) {
+export function AnnuaireBlock({ employees, total }: { employees: Employee[]; total?: number }) {
   const [q, setQ] = useState("");
 
   if (employees.length === 0) {
@@ -258,11 +258,12 @@ export function AnnuaireBlock({ employees }: { employees: Employee[] }) {
   const rows = nq
     ? employees.filter((e) => `${e.name} ${e.title} ${e.domain}`.toLowerCase().includes(nq))
     : employees;
+  const totalAnn = Math.max(total ?? employees.length, employees.length);
 
   return (
     <div className="fiche-section">
       <h4>
-        Décideurs &amp; annuaire LinkedIn <span className="muted">— {employees.length}</span>
+        Décideurs &amp; annuaire LinkedIn <span className="muted">— {totalAnn}</span>
       </h4>
       <input
         className="search ann-search"
@@ -287,6 +288,12 @@ export function AnnuaireBlock({ employees }: { employees: Employee[] }) {
             </div>
           ))}
         </div>
+      )}
+      {totalAnn > employees.length && (
+        <p className="empty-note">
+          Aperçu de {employees.length} profils — {totalAnn - employees.length} autres dans
+          l'annuaire complet, recherche email/téléphone à la demande uniquement.
+        </p>
       )}
     </div>
   );
@@ -429,15 +436,7 @@ function initials(name: string): string {
     .toUpperCase();
 }
 
-export function ContactsBlock({
-  contacts,
-  otherCount,
-}: {
-  contacts: Contact[];
-  otherCount: number;
-}) {
-  const [showOthers, setShowOthers] = useState(false);
-
+export function ContactsBlock({ contacts }: { contacts: Contact[] }) {
   if (contacts.length === 0) {
     return (
       <p className="empty-note">
@@ -453,17 +452,6 @@ export function ContactsBlock({
           <ContactCard key={c.email} contact={c} />
         ))}
       </div>
-      {otherCount > 0 && (
-        <button className="btn-ghost others-toggle" onClick={() => setShowOthers((v) => !v)}>
-          {showOthers ? "Masquer les autres contacts" : `Voir les ${otherCount} autres contacts`}
-        </button>
-      )}
-      {showOthers && (
-        <p className="empty-note">
-          {otherCount} contacts hors rôles clés (production, commercial, support…) — masqués
-          par défaut, recherche email/téléphone à la demande uniquement.
-        </p>
-      )}
     </>
   );
 }
