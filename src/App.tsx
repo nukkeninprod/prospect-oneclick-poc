@@ -167,6 +167,7 @@ export default function App() {
   const manual = useRef<Set<string>>(new Set()); // lancés à la main → auto-ouverture
   const msgId = useRef(0);
   const batchActive = useRef(false);
+  const batchIds = useRef<Set<string>>(new Set());
   // États déjà en mémoire au chargement : ne pas re-notifier dans le chat.
   const prevPhases = useRef<Record<string, RunPhase> | null>(null);
   if (prevPhases.current === null) {
@@ -213,10 +214,10 @@ export default function App() {
     const running = PROSPECTS.some((p) => runs[p.id]?.phase === "running");
     if (running) return;
     batchActive.current = false;
-    const states = Object.values(runs);
-    const done = states.filter((r) => r.phase === "done").length;
-    const ec = states.filter((r) => r.phase === "ecarte").length;
-    const er = states.filter((r) => r.phase === "error").length;
+    const lot = [...batchIds.current].map((id) => runs[id]).filter(Boolean);
+    const done = lot.filter((r) => r.phase === "done").length;
+    const ec = lot.filter((r) => r.phase === "ecarte").length;
+    const er = lot.filter((r) => r.phase === "error").length;
     pushMsg("bot", `Lot terminé : ${done} fiches prêtes · ${ec} écartés · ${er} échec${er > 1 ? "s" : ""}. Les filtres en haut te donnent le tri.`);
   }, [queue, runs]);
 
@@ -258,6 +259,7 @@ export default function App() {
     if (ids.length === 0) return;
     for (const id of ids) manual.current.delete(id); // lot → pas d'auto-ouverture
     batchActive.current = true;
+    batchIds.current = new Set(ids); // le bilan ne compte que le lot, pas les analyses antérieures
     setQueue((prev) => [...prev, ...ids]);
   };
 
@@ -272,6 +274,7 @@ export default function App() {
     setStatusFilter("all");
     setQueue([]);
     manual.current.clear();
+    batchActive.current = false; // sinon le bilan « Lot terminé : 0 … » part après un reset en plein lot
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch {
@@ -283,19 +286,21 @@ export default function App() {
   const handleChat = (text: string) => {
     pushMsg("user", text);
     const t = norm(text);
-    if (t.includes("tout")) {
+    // \btous?\b : « tout analyser » oui, « toutes les fiches » non
+    if (/\btous?\b/.test(t)) {
       if (PROSPECTS.some((p) => (runs[p.id]?.phase ?? "idle") === "idle")) {
         launchBatch();
-        pushMsg("bot", "C'est parti — j'analyse tout le lot, 3 en parallèle. Regarde les filtres se remplir.");
+        pushMsg("bot", `C'est parti — j'analyse tout le lot, ${BATCH_CONCURRENCY} en parallèle. Regarde les filtres se remplir.`);
       } else {
         pushMsg("bot", "Tout est déjà analysé — « Réinitialiser la démo » pour rejouer.");
       }
       return;
     }
+    const tWords = t.split(/\s+/);
     const target = PROSPECTS.find((p) =>
       norm(p.name)
         .split(" ")
-        .some((w) => w.length > 3 && t.includes(w)),
+        .some((w) => w.length > 3 && tWords.includes(w)),
     );
     if (target) {
       launch(target);

@@ -22,10 +22,13 @@ export function Chat({
   onSend: (text: string) => void;
 }) {
   const [text, setText] = useState("");
-  const endRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
 
+  // Ne fait défiler QUE le corps du chat — jamais la page (sur mobile, le
+  // panneau est sous la liste : scrollIntoView sauterait à chaque message).
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    const el = bodyRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
   const send = (t: string) => {
@@ -42,13 +45,12 @@ export function Chat({
         Copilote
         <span className="muted-tag">démo scriptée</span>
       </div>
-      <div className="chat-body">
+      <div className="chat-body" ref={bodyRef}>
         {messages.map((m) => (
           <div key={m.id} className={`chat-msg ${m.from}`}>
             {m.text}
           </div>
         ))}
-        <div ref={endRef} />
       </div>
       <div className="chat-suggestions">
         {suggestions.map((s) => (
