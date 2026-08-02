@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Compare } from "./Compare";
 import { PROSPECTS } from "./data";
 import { runAnalysis } from "./engine";
-import { Fiche } from "./Fiche";
-import { Timeline } from "./Timeline";
+import { LiveFiche } from "./LiveFiche";
 import type { Prospect, RunPhase, RunState } from "./types";
 
 type Runs = Record<string, RunState>;
@@ -127,22 +126,7 @@ function ProspectRow({
 
       {open && launched && (
         <div className="row-detail">
-          <Timeline run={run!} />
-          {run!.phase === "done" && (
-            <Fiche prospect={p} healthUnknown={p.scenario === "no_pappers"} />
-          )}
-          {run!.phase === "ecarte" && (
-            <p className="verdict verdict-ecarte">
-              Résultat, pas erreur : la règle métier (score &gt; 50) a écarté ce prospect —
-              un appel économisé. La fiche n'est pas générée.
-            </p>
-          )}
-          {run!.phase === "error" && (
-            <p className="verdict verdict-error">
-              Échec technique réel (l'API santé n'a pas répondu). Rien n'a été écrit —
-              relancer quand la source répond.
-            </p>
-          )}
+          <LiveFiche p={p} run={run!} />
         </div>
       )}
     </div>

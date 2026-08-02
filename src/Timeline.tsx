@@ -1,11 +1,11 @@
 import type { RunState, StepState } from "./types";
 
-function fmtDuration(ms?: number): string {
+export function fmtDuration(ms?: number): string {
   if (!ms) return "";
   return ms >= 1000 ? `${Math.round(ms / 1000)} s` : `${ms} ms`;
 }
 
-function StepIcon({ status }: { status: StepState["status"] }) {
+export function StepIcon({ status }: { status: StepState["status"] }) {
   switch (status) {
     case "done":
       return <span className="step-icon done" role="img" aria-label="terminé">✓</span>;

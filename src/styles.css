@@ -234,6 +234,55 @@ button:disabled { opacity: 0.55; cursor: default; }
   font-size: 12.5px; color: var(--ink-muted);
 }
 
+/* ============ Fiche vivante (accordéon animé) ============ */
+.sections { display: flex; flex-direction: column; }
+
+.sec-head {
+  background: none; border: none; border-radius: 8px;
+  padding: 6px 4px; width: 100%; display: flex; gap: 10px;
+  align-items: baseline; font: inherit; font-size: 13.5px;
+  text-align: left; font-weight: 400; color: inherit;
+}
+.sec-head:disabled { opacity: 1; cursor: default; }
+.sec-head:not(:disabled):hover { background: var(--page); }
+
+.sec .step-label { flex: 0 0 150px; font-weight: 600; color: var(--ink); }
+.sec.pending .step-label { color: var(--ink-muted); font-weight: 500; }
+.sec .step-detail { flex: 1 1 auto; color: var(--ink-2); }
+.sec.warning .step-detail { color: var(--warn-text); }
+.sec.stopped .step-detail { color: var(--serious-text); font-weight: 600; }
+.sec.error .step-detail { color: var(--critical-text); font-weight: 600; }
+.sec .step-duration { flex: 0 0 auto; color: var(--ink-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.sec .step-icon { align-self: center; }
+
+.chev {
+  align-self: center; color: var(--ink-muted); font-size: 11px;
+  transform: rotate(-90deg); transition: transform 260ms ease;
+  flex: 0 0 14px; text-align: center;
+}
+.chev.open { transform: rotate(0deg); }
+.chev.hidden { visibility: hidden; }
+
+.sec-wrap {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows 380ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.sec-wrap.open { grid-template-rows: 1fr; }
+.sec-inner { overflow: hidden; min-height: 0; }
+.sec-pad {
+  padding: 8px 4px 16px 32px;
+  display: flex; flex-direction: column; gap: 14px;
+  animation: rise 420ms ease;
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sec-wrap, .chev { transition: none; }
+  .sec-pad { animation: none; }
+}
+
 /* ============ Données financières ============ */
 .financiere { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
 

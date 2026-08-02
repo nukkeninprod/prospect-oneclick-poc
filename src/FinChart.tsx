@@ -8,7 +8,8 @@ import type { Exercice } from "./types";
 
 export function fmtEur(kEur: number): string {
   if (Math.abs(kEur) >= 1000) {
-    return `${(kEur / 1000).toFixed(1).replace(".", ",")} M€`;
+    // arrondi demi-supérieur explicite (1650 → « 1,7 M€ », pas « 1,6 »)
+    return `${(Math.round(kEur / 100) / 10).toFixed(1).replace(".", ",")} M€`;
   }
   return `${Math.round(kEur)} k€`;
 }
@@ -27,7 +28,7 @@ export function FinChart({ exercices }: { exercices: Exercice[] }) {
     M.t + ((caMax - v) * (H - M.t - M.b)) / (caMax - resMin);
 
   const caPts = exercices.map((e, i) => `${x(i)},${y(e.ca)}`).join(" ");
-  const caArea = `${M.l},${y(0)} ${caPts.replace(/ /g, " ")} ${x(exercices.length - 1)},${y(0)}`;
+  const caArea = `${M.l},${y(0)} ${caPts} ${x(exercices.length - 1)},${y(0)}`;
   const resPts = exercices.map((e, i) => `${x(i)},${y(e.resultat)}`).join(" ");
 
   const last = exercices[exercices.length - 1];
