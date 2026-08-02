@@ -30,7 +30,7 @@ const BEFORE: BeforeEvent[] = [
   { at: 3600, icon: "🧭", text: "Changement de menu n°1 → Analyse → Analyse des prospects", tone: "nav" },
   { at: 4400, icon: "⌨", text: "Recherche : « InfraGreen Wallonie »", note: "saisie du nom n°2 — le même" },
   { at: 5000, icon: "🖱", text: "Clic « Analyser » → le bouton devient gris et tourne" },
-  { at: 11000, icon: "▸", text: "La ligne se met à jour : 4 signaux · 6 sources · potentiel élevé", tone: "good" },
+  { at: 11000, icon: "▸", text: "La ligne se met à jour : 3 signaux · 3 sources · potentiel élevé", tone: "good" },
   { at: 12000, icon: "🧭", text: "Changement de menu n°2 → Fiche signalétique → défiler les onglets → « Prospects »", tone: "nav" },
   { at: 12800, icon: "⌨", text: "Recherche : « InfraGreen Wallonie »", note: "saisie du nom n°3" },
   { at: 14800, icon: "▸", text: "La fiche s'affiche enfin.", tone: "good" },
@@ -216,7 +216,7 @@ export function Compare() {
               <tr><td>Changements de menu</td><td>2</td><td className="score-after">0</td></tr>
               <tr><td>Saisies du même nom</td><td>3</td><td className="score-after">0</td></tr>
               <tr><td>Pendant l'attente</td><td>un bouton gris figé</td><td className="score-after">chaque étape, en direct</td></tr>
-              <tr><td>« Écarté » vs « planté »</td><td>indistinguables</td><td className="score-after">deux états distincts</td></tr>
+              <tr><td>« Écarté » vs « planté »</td><td>indiscernables</td><td className="score-after">deux états distincts</td></tr>
               <tr><td>Statut final</td><td>à reconstituer de tête</td><td className="score-after">✓ Fiche prête, sur la ligne</td></tr>
               <tr><td>Temps total vécu</td><td>{fmtReal(BEFORE_END)}</td><td className="score-after">{fmtReal(AFTER_END)}</td></tr>
             </tbody>

@@ -19,7 +19,9 @@ function loadRuns(): Runs {
     const parsed = JSON.parse(raw) as Runs;
     const out: Runs = {};
     for (const [id, rs] of Object.entries(parsed)) {
-      if (rs && TERMINAL.includes(rs.phase)) out[id] = rs;
+      // steps doit être un tableau, sinon Timeline crashe sur une valeur
+      // corrompue/ancienne — et le poison persisterait à chaque rechargement.
+      if (rs && TERMINAL.includes(rs.phase) && Array.isArray(rs.steps)) out[id] = rs;
     }
     return out;
   } catch {
@@ -173,6 +175,9 @@ export default function App() {
   }, [runs]);
 
   const launch = (p: Prospect) => {
+    // Revenir sur « Tous » : sous un filtre de statut, la ligne lancée
+    // changerait de statut, sortirait du filtre et disparaîtrait en pleine analyse.
+    setStatusFilter("all");
     cancels.current[p.id]?.();
     cancels.current[p.id] = runAnalysis(p, (rs) =>
       setRuns((prev) => ({ ...prev, [p.id]: rs })),
