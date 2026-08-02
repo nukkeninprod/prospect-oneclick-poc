@@ -345,7 +345,7 @@ export function FicheSynthese({ p }: { p: Prospect }) {
           </span>
         )}
         {p.verifiedSources !== undefined && (
-          <span className="badge badge-neutral">🛡 {p.verifiedSources} sources</span>
+          <span className="badge badge-neutral">{p.verifiedSources} sources vérifiées</span>
         )}
       </div>
       <div className="mini-kpis">
