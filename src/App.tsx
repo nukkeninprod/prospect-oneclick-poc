@@ -146,7 +146,7 @@ export default function App() {
     {
       id: 0,
       from: "bot",
-      text: `${MARKET.length} sociétés sous veille, ${TOTAL_SIGNALS} signaux. Dis-moi ce qu'il te faut.`,
+      text: `${MARKET.length} sociétés sous veille, ${TOTAL_SIGNALS} signaux. Dis-moi ce qu'il te faut.${getStoredKey() ? "" : " (💡 « Brancher Claude » en haut → colle ta clé API pour le langage naturel.)"}`,
     },
   ]);
   const [llmKey, setLlmKey] = useState<string | null>(getStoredKey);
@@ -260,7 +260,9 @@ export default function App() {
     if (!matchedAnything) {
       pushMsg(
         "bot",
-        "Je n'ai pas saisi de critère. Province, secteur, taille (« sous 50 »), actualité (« où il se passe quelque chose », « le dirigeant a changé ») — ou « recommence ».",
+        llmKey === null
+          ? "Sans clé, je ne comprends que des mots-clés simples (province, secteur, « sous 50 », « le dirigeant a changé »…). 💡 Clique « Brancher Claude » en haut pour me parler librement."
+          : "Je n'ai pas saisi de critère. Province, secteur, taille (« sous 50 »), actualité (« où il se passe quelque chose », « le dirigeant a changé ») — ou « recommence ».",
       );
       return;
     }
