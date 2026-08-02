@@ -43,7 +43,6 @@ export function Chat({
       <div className="chat-head">
         <span className="pulse-dot" aria-hidden="true" />
         Copilote
-        <span className="muted-tag">démo scriptée</span>
       </div>
       <div className="chat-body" ref={bodyRef}>
         {messages.map((m) => (

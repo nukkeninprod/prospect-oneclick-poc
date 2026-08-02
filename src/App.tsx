@@ -47,11 +47,8 @@ function saveRuns(runs: Runs) {
 
 function phaseBadge(run: RunState | undefined, p: Prospect, queued: boolean) {
   if (!run || run.phase === "idle") {
-    return queued ? (
-      <span className="badge badge-running">En file…</span>
-    ) : (
-      <span className="badge badge-neutral">À analyser</span>
-    );
+    // Pas de badge tant que rien ne tourne — l'écran reste silencieux.
+    return queued ? <span className="badge badge-running">En file…</span> : null;
   }
   switch (run.phase) {
     case "running":
@@ -141,12 +138,14 @@ export default function App() {
   const [queue, setQueue] = useState<string[]>([]);
   const [criteria, setCriteria] = useState<Criteria>({ ...EMPTY_CRITERIA });
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
-  const [result, setResult] = useState<RankResult | null>(null);
+  // Les sociétés sont visibles d'entrée : top du marché, trié par pertinence.
+  const [result, setResult] = useState<RankResult>(() => rank({ ...EMPTY_CRITERIA }, new Set()));
+  const [refined, setRefined] = useState(false);
   const [messages, setMessages] = useState<ChatMsg[]>([
     {
       id: 0,
       from: "bot",
-      text: `Bonjour 👋 J'ai déjà lu le marché pour toi : ${MARKET.length} sociétés sous veille, ${TOTAL_SIGNALS} signaux détectés. Dis-moi ce qu'il te faut, comme tu le dirais à un collègue — je trie, je justifie, et j'analyse le top d'une traite.`,
+      text: `${MARKET.length} sociétés sous veille, ${TOTAL_SIGNALS} signaux. Dis-moi ce qu'il te faut.`,
     },
   ]);
 
@@ -249,18 +248,20 @@ export default function App() {
     if (isReset) {
       setCriteria({ ...EMPTY_CRITERIA });
       setDismissed(new Set());
-      setResult(null);
-      pushMsg("bot", "Nouveau besoin — je t'écoute. Le marché est toujours sous veille.");
+      setResult(rank({ ...EMPTY_CRITERIA }, new Set()));
+      setRefined(false);
+      pushMsg("bot", "Vue d'ensemble rétablie — exprime un besoin quand tu veux.");
       return;
     }
     if (!matchedAnything) {
       pushMsg(
         "bot",
-        "Je n'ai pas saisi de critère. Parle-moi province (« Hainaut », « Wallonie »), secteur (« production », « construction »…), taille (« sous 50 »), actualité (« où il se passe quelque chose », « le dirigeant a changé ») — ou « recommence ».",
+        "Je n'ai pas saisi de critère. Province, secteur, taille (« sous 50 »), actualité (« où il se passe quelque chose », « le dirigeant a changé ») — ou « recommence ».",
       );
       return;
     }
     setCriteria(c2);
+    setRefined(true);
     const res = compose(c2, dismissed);
     pushMsg("bot", ackFor(understood, res, c2));
   };
@@ -288,7 +289,8 @@ export default function App() {
     setQueue([]);
     setCriteria({ ...EMPTY_CRITERIA });
     setDismissed(new Set());
-    setResult(null);
+    setResult(rank({ ...EMPTY_CRITERIA }, new Set()));
+    setRefined(false);
     sweepActive.current = false;
     sweepIds.current.clear();
     try {
@@ -305,73 +307,52 @@ export default function App() {
       <div className="page">
         <header className="header">
           <div>
-            <h1>Prospection — le marché te répond</h1>
+            <h1>Prospection</h1>
             <p className="subtitle">
-              POC · données 100 % fictives · veille continue simulée · timings réels ÷ 10
+              {MARKET.length} sociétés sous veille · {TOTAL_SIGNALS} signaux · dernière passe 06:12
             </p>
           </div>
-          <button className="btn-secondary" onClick={reset}>Réinitialiser la démo</button>
+          <button className="btn-secondary" onClick={reset}>Réinitialiser</button>
         </header>
 
-        <div className="corpus-strip">
-          <span className="pulse-dot" aria-hidden="true" />
+        <div className="result-head">
           <span>
-            <strong>{MARKET.length}</strong> sociétés sous veille · <strong>{TOTAL_SIGNALS}</strong> signaux
-            · dernière passe : ce matin 06:12
-          </span>
-        </div>
-
-        {result === null ? (
-          <div className="dream-empty">
-            <p className="dream-title">Dis-moi ce qu'il te faut.</p>
-            <p className="dream-sub">
-              Pas de liste, pas de filtres, pas de recherche — j'ai déjà tout regardé.
-              Exprime ton besoin comme à un collègue :
-            </p>
-            <button className="dream-example" onClick={() => handleChat(DREAM_PHRASE)}>
-              « {DREAM_PHRASE}. »
-            </button>
-          </div>
-        ) : (
-          <>
-            <div className="result-head">
-              <span>
-                Top {Math.min(criteria.topN, result.matchCount)} ·{" "}
+            {refined ? (
+              <>
                 <strong>{result.matchCount}</strong> correspondent ·{" "}
                 <strong>{result.excludedCount}</strong> écartées d'office
-              </span>
-              <button className="chip" onClick={() => handleChat("recommence")}>
-                Nouveau besoin
-              </button>
-            </div>
-            <main className="list">
-              {result.top.length === 0 ? (
-                <p className="empty-list">
-                  Aucune société ne correspond — élargis un critère dans le chat.
-                </p>
-              ) : (
-                result.top.map((r, i) => (
-                  <ResultRow
-                    key={r.p.id}
-                    r={r}
-                    index={i}
-                    run={runs[r.p.id]}
-                    queued={queue.includes(r.p.id)}
-                    onDismiss={dismissOne}
-                    onRetry={retryOne}
-                  />
-                ))
-              )}
-            </main>
-          </>
-        )}
+              </>
+            ) : (
+              <>Le plus pertinent du moment, sur tout le marché</>
+            )}
+          </span>
+          {refined && (
+            <button className="chip" onClick={() => handleChat("recommence")}>
+              Nouveau besoin
+            </button>
+          )}
+        </div>
+        <main className="list">
+          {result.top.length === 0 ? (
+            <p className="empty-list">
+              Aucune société ne correspond — élargis un critère dans le chat.
+            </p>
+          ) : (
+            result.top.map((r, i) => (
+              <ResultRow
+                key={r.p.id}
+                r={r}
+                index={i}
+                run={runs[r.p.id]}
+                queued={queue.includes(r.p.id)}
+                onDismiss={dismissOne}
+                onRetry={retryOne}
+              />
+            ))
+          )}
+        </main>
 
-        <footer className="footer">
-          Démo statique — aucun appel réseau, aucune donnée réelle. Le rêve simulé : la machine
-          a déjà lu tout le marché ; tu exprimes un besoin, elle trie, justifie chaque dossier
-          (signal, date, source), analyse le top d'une traite et accepte d'être contredite en
-          une phrase.
-        </footer>
+        <footer className="footer">Démo · données 100 % fictives.</footer>
       </div>
     </div>
   );
