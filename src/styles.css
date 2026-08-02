@@ -217,6 +217,60 @@ button:disabled { opacity: 0.45; cursor: default; }
 .btn-ghost { background: transparent; color: var(--accent-strong); padding: 7px 10px; }
 .btn-ghost:not(:disabled):hover { background: var(--accent-tint); }
 
+/* ============ Bandeau corpus + écran vide du rêve ============ */
+.corpus-strip {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface-2); border: 1px solid var(--hairline);
+  border-radius: var(--radius-pill); padding: 8px 16px;
+  font-size: 12.5px; color: var(--ink-2); margin-bottom: 18px;
+}
+.corpus-strip strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+.dream-empty {
+  text-align: center; padding: 72px 24px 84px;
+  border: 1.5px dashed var(--hairline); border-radius: 20px;
+}
+.dream-title {
+  margin: 0 0 10px; font-size: 30px; font-weight: 750; letter-spacing: -0.02em;
+  background: linear-gradient(92deg, #ffffff 15%, #9cc8ff 70%, #6ee4e4);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.dream-sub { margin: 0 auto 22px; max-width: 480px; color: var(--ink-2); font-size: 14px; }
+.dream-example {
+  background: var(--surface-2); border: 1px solid var(--ring); color: var(--ink-2);
+  border-radius: 14px; padding: 12px 18px; font-size: 13.5px; font-weight: 500;
+  max-width: 560px; font-style: italic; line-height: 1.5;
+}
+.dream-example:hover { border-color: var(--accent); color: var(--ink); }
+
+.result-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin-bottom: 12px; font-size: 13px; color: var(--ink-2); flex-wrap: wrap;
+}
+.result-head strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* ============ Lignes de résultat ============ */
+.result-enter { animation: rise 460ms ease backwards; }
+.rank {
+  flex: 0 0 30px; font-size: 19px; font-weight: 750; text-align: center;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(180deg, #ffffff, #86b8f7);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.dismiss { color: var(--ink-muted); font-size: 14px; padding: 7px 9px; }
+.dismiss:hover { color: var(--critical-text); background: var(--critical-tint); }
+
+.reason { padding: 0 16px 12px 60px; }
+.reason-line { font-size: 13.5px; font-weight: 600; }
+.reason-meta {
+  font-size: 12px; color: var(--ink-muted); margin: 2px 0 6px;
+  font-variant-numeric: tabular-nums;
+}
+.reason-why {
+  font-size: 12.5px; color: var(--ink-2);
+  border-left: 2px solid var(--accent); padding-left: 10px;
+}
+
 /* ============ Barre recherche + filtres ============ */
 .toolbar {
   display: flex; gap: 10px; margin-bottom: 14px;

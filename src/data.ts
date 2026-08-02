@@ -27,7 +27,7 @@ export const PROSPECTS: Prospect[] = [
     enterpriseNumber: "0412.887.301",
     city: "Charleroi",
     province: "Hainaut",
-    workerBand: "50-99",
+    workerBand: "20-49",
     sector: "Métallurgie",
     scenario: "ok",
     healthScore: 74,

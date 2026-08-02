@@ -31,6 +31,7 @@ export interface Signal {
   impact?: "low" | "medium" | "high";
   description?: string;
   salesAngle?: string;
+  daysAgo?: number; // ancienneté machine-lisible (tri par pertinence)
 }
 
 export interface NewsItem {
@@ -104,6 +105,8 @@ export interface Prospect {
   potential?: "élevé" | "moyen"; // potentiel commercial de l'analyse
   priority?: number; // priority_score
   verifiedSources?: number;
+  sizeNum?: number; // effectif médian de la bande ONSS (filtres taille)
+  sectorGroup?: string; // "Production", "Construction", "Intérim & titres-services"…
   whyCallNow: string; // la ligne qui vend
   signals: Signal[];
   contacts: Contact[];
