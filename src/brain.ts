@@ -208,7 +208,8 @@ export function rank(c: Criteria, dismissed: Set<string>): RankResult {
   }
   matches.sort((a, b) => b.score - a.score);
   return {
-    top: matches.slice(0, c.topN),
+    // TOUTES les correspondances, classées — l'écran montre le marché entier.
+    top: matches,
     matchCount: matches.length,
     excludedCount: MARKET.length - matches.length - dismissed.size,
   };
@@ -234,6 +235,6 @@ export function ackFor(understood: string[], res: RankResult, c: Criteria): stri
   if (res.matchCount === 0) {
     return `${crit}Aucune société ne correspond — élargis un critère (taille, province, récence) et je recompose.`;
   }
-  const shown = Math.min(c.topN, res.matchCount);
-  return `${crit}${res.matchCount} sociétés correspondent sur ${MARKET.length} — j'ai écarté les ${res.excludedCount} autres. Voici le top ${shown} par pertinence ; j'analyse tout d'une traite.`;
+  const sweep = Math.min(c.topN, res.matchCount);
+  return `${crit}${res.matchCount} société${res.matchCount > 1 ? "s" : ""} correspondent sur ${MARKET.length} — j'ai écarté les ${res.excludedCount} autres. Classées par pertinence ; j'analyse le top ${sweep} d'une traite.`;
 }

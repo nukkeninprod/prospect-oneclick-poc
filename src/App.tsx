@@ -226,11 +226,12 @@ export default function App() {
     );
   }, [queue, runs]);
 
-  /** (Re)compose la liste et lance les analyses du top d'une traite. */
+  /** (Re)compose la liste et lance les analyses du haut du classement d'une traite. */
   const compose = (c: Criteria, dis: Set<string>) => {
     const res = rank(c, dis);
     setResult(res);
     const idle = res.top
+      .slice(0, c.topN)
       .filter((r) => (runs[r.p.id]?.phase ?? "idle") === "idle")
       .map((r) => r.p.id);
     if (idle.length > 0) {
@@ -323,7 +324,9 @@ export default function App() {
                 <strong>{result.excludedCount}</strong> écartées d'office
               </>
             ) : (
-              <>Le plus pertinent du moment, sur tout le marché</>
+              <>
+                <strong>{result.matchCount}</strong> sociétés · triées par pertinence du moment
+              </>
             )}
           </span>
           {refined && (
