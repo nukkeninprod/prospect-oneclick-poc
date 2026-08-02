@@ -204,7 +204,7 @@ export function rank(c: Criteria, dismissed: Set<string>): RankResult {
     const impact = best ? { high: 1, medium: 0.65, low: 0.4 }[best.impact ?? "low"] : 0.3;
     const multi = 1 + 0.12 * Math.max(0, sigs.length - 1);
     const health = p.healthScore === null ? 0.75 : p.healthScore < 50 ? 0.35 : 0.85 + p.healthScore / 400;
-    matches.push({ p, bestSignal: best, score: Math.round(100 * recency * impact * multi * health) });
+    matches.push({ p, bestSignal: best, score: Math.min(99, Math.round(100 * recency * impact * multi * health)) });
   }
   matches.sort((a, b) => b.score - a.score);
   return {

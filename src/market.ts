@@ -124,16 +124,42 @@ function mkSignal(sd: SectorDef, city: string, size: number): Signal {
   const type = pick(sd.types);
   const daysAgo = chance(0.55) ? rint(2, 45) : rint(46, 170);
   const n = rint(2, Math.max(3, Math.round(size / 8)));
-  const T: Record<SigT, [string, string, string]> = {
-    talent: [`Publication de ${n} offres d'emploi en ${n > 4 ? "rafale" : "cours"}`, "Site web", `${n} postes ouverts simultanément — la charge contrats/DIMONA suit.`],
-    expansion: [`Extension du site de ${city} annoncée`, pick(PRESS), "Un site qui s'agrandit = des embauches et une paie qui change d'échelle."],
-    acquisition: ["Reprise d'un concurrent local finalisée", pick(PRESS), "Deux régimes de paie à fusionner — fenêtre d'appel idéale."],
-    fundraising: [`Levée de fonds de ${rint(1, 6)} M€ annoncée`, "Trends-Tendances", "Du cash pour structurer : le moment de vendre l'accompagnement RH."],
-    decision_maker_change: ["Changement à la direction générale", "LinkedIn", "Un décideur neuf rebat les cartes prestataires pendant 90 jours."],
-    contract_opportunity: ["Nouveau marché pluriannuel remporté", pick(PRESS), "Un marché gagné impose des équipes en règle au jour 1."],
-    growth_signal: [`Investissement de ${rint(1, 4)},${rint(1, 9)} M€ dans l'outil de production`, pick(PRESS), "La capacité monte — les effectifs suivront."],
+  // Plusieurs gabarits par type — un top 10 monotone tue la magie.
+  const T: Record<SigT, [string, string, string][]> = {
+    talent: [
+      [`Publication de ${n} offres d'emploi en ${n > 4 ? "rafale" : "cours"}`, "Site web", `${n} postes ouverts simultanément — la charge contrats/DIMONA suit.`],
+      [`${n} postes ouverts en quelques semaines`, "Site web", "Le recrutement s'accélère plus vite que l'administratif RH."],
+      [`Campagne de recrutement lancée (${n} profils)`, "LinkedIn", "Qui dit embauches dit contrats, DIMONA et onboarding à absorber."],
+    ],
+    expansion: [
+      [`Extension du site de ${city} annoncée`, pick(PRESS), "Un site qui s'agrandit = des embauches et une paie qui change d'échelle."],
+      [`Ouverture d'une seconde implantation près de ${city}`, pick(PRESS), "Deux sites = paie multi-établissements, à cadrer avant l'ouverture."],
+      ["Agrandissement des installations approuvé", pick(PRESS), "Plus de surface, plus d'équipes — l'administratif suit rarement le rythme."],
+    ],
+    acquisition: [
+      ["Reprise d'un concurrent local finalisée", pick(PRESS), "Deux régimes de paie à fusionner — fenêtre d'appel idéale."],
+      ["Fusion avec un acteur voisin annoncée", pick(PRESS), "Transfert de personnel (CCT 32bis) et harmonisation : notre terrain."],
+    ],
+    fundraising: [
+      [`Levée de fonds de ${rint(1, 6)} M€ annoncée`, "Trends-Tendances", "Du cash pour structurer : le moment de vendre l'accompagnement RH."],
+      [`Tour de table de ${rint(1, 5)} M€ bouclé`, "L'Echo", "Croissance financée = effectifs qui suivent, vite."],
+    ],
+    decision_maker_change: [
+      ["Changement à la direction générale", "LinkedIn", "Un décideur neuf rebat les cartes prestataires pendant 90 jours."],
+      ["Nouveau directeur général nommé", "LinkedIn", "Fenêtre de 90 jours : un nouveau patron réévalue tout, y compris la paie."],
+      ["Passage de relais à la tête de l'entreprise", pick(PRESS), "La transmission ouvre la porte à de nouveaux partenaires."],
+    ],
+    contract_opportunity: [
+      ["Nouveau marché pluriannuel remporté", pick(PRESS), "Un marché gagné impose des équipes en règle au jour 1."],
+      ["Contrat cadre signé avec un grand donneur d'ordre", pick(PRESS), "Montée en charge contractuelle : les effectifs doivent suivre sans faute."],
+      ["Appel d'offres public gagné", pick(PRESS), "Marché public : conformité sociale exigée dès le premier jour."],
+    ],
+    growth_signal: [
+      [`Investissement de ${rint(1, 4)},${rint(1, 9)} M€ dans l'outil de production`, pick(PRESS), "La capacité monte — les effectifs suivront."],
+      ["Passage en deux équipes à l'étude", pick(PRESS), "Le 2×8 change primes et horaires : à cadrer avant, pas après."],
+    ],
   };
-  const [title, source, salesAngle] = T[type];
+  const [title, source, salesAngle] = pick(T[type]);
   return {
     date: dateStr(daysAgo), daysAgo, title, source, type,
     impact: daysAgo < 30 ? IMPACT_BY_TYPE[type] : chance(0.5) ? "medium" : "low",
