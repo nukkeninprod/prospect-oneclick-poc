@@ -136,9 +136,10 @@ function script(p: Prospect): TimedEvent[] {
   } else {
     push(1600, (s) => {
       const n = p.contacts.length;
+      const ann = p.employees?.length ?? 0;
       set(s, "contacts", {
         status: "done",
-        detail: `${n} rôle${n > 1 ? "s" : ""} clé${n > 1 ? "s" : ""} trouvé${n > 1 ? "s" : ""}`,
+        detail: `${n} rôle${n > 1 ? "s" : ""} clé${n > 1 ? "s" : ""} · ${ann} dans l'annuaire`,
         durationMs: 22000,
       });
       return {};
@@ -147,7 +148,12 @@ function script(p: Prospect): TimedEvent[] {
 
   // Étape 5 — fiche
   push(400, (s) => {
-    set(s, "fiche", { status: "done", detail: "Fiche signalétique générée" });
+    set(s, "fiche", {
+      status: "done",
+      detail: p.potential
+        ? `Potentiel ${p.potential} · plan d'attaque prêt`
+        : "Fiche signalétique générée",
+    });
     return { phase: "done" };
   });
 

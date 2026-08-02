@@ -35,10 +35,37 @@ export const PROSPECTS: Prospect[] = [
     whyCallNow:
       "Vient d'annoncer l'extension de son site de Marchienne (+30 postes de production) — un pic d'embauche sans équipe RH élargie.",
     signals: [
-      { date: "28 juil. 2026", title: "Extension du site de Marchienne annoncée : +30 recrutements de production d'ici décembre", source: "L'Echo" },
-      { date: "9 juil. 2026", title: "Publication de 6 offres (opérateurs CNC, chef d'équipe) sur son site carrières", source: "Site web" },
-      { date: "12 juin 2026", title: "Nomination d'un nouveau directeur des opérations, ex-Aperam", source: "LinkedIn" },
+      { date: "28 juil. 2026", title: "Extension du site de Marchienne annoncée : +30 recrutements de production d'ici décembre", source: "L'Echo", type: "expansion", impact: "high", description: "Investissement de 6,5 M€ dans une nouvelle ligne de fonderie ; la production passe en 2×8.", salesAngle: "30 embauches = 30 contrats et une paie qui double d'échelle — proposer l'audit paie avant le pic de décembre." },
+      { date: "9 juil. 2026", title: "Publication de 6 offres (opérateurs CNC, chef d'équipe) sur son site carrières", source: "Site web", type: "talent", impact: "medium", description: "Opérateurs CNC et chef d'équipe recherchés depuis trois semaines, offres toujours ouvertes.", salesAngle: "Le recrutement patine — ouvrir sur le support RH et l'intérim management." },
+      { date: "12 juin 2026", title: "Nomination d'un nouveau directeur des opérations, ex-Aperam", source: "LinkedIn", type: "decision_maker_change", impact: "medium", description: "Arrivé en juin, il restructure les opérations et revoit les fournisseurs.", salesAngle: "Un décideur neuf = fenêtre de 90 jours pour rebattre les cartes prestataires." },
     ],
+    news: [
+      { title: "Fonderie Delcourt investit 6,5 M€ à Marchienne", date: "28 juil. 2026", relevance: "Confirme le pic d'embauche visé par le plan d'attaque.", tier: "verified" },
+    ],
+    attack: [
+      { type: "quick_win", title: "Audit paie avant le 2×8", action: "Proposer l'audit gratuit de la paie production avant le passage en équipes (décembre)." },
+      { type: "core_bet", title: "Externalisation payroll complète", action: "Chiffrer la gestion des 30 nouveaux contrats et des barèmes CP 111." },
+      { type: "decision_maker_hook", title: "Brief au nouveau dir. des opérations", action: "Note d'une page sur les risques sociaux du 2×8, adressée à M. Delcourt et au directeur des opérations." },
+    ],
+    crossSell: [
+      { product: "Payroll & administration salariale", justification: "La paie double d'échelle avec le 2×8 ; le prestataire actuel n'a pas d'agence à Charleroi." },
+      { product: "Support juridique social", justification: "Travail en équipes : règlement de travail et primes d'équipe à revoir (CP 111)." },
+    ],
+    employees: [
+      { name: "Marc Delcourt", title: "Administrateur délégué", domain: "Direction", location: "Charleroi" },
+      { name: "Sophie Lambrechts", title: "Responsable comptabilité", domain: "Finance", location: "Charleroi" },
+      { name: "Julien Warnier", title: "HR Officer", domain: "RH", location: "Charleroi" },
+      { name: "Kevin Dubois", title: "Chef d'équipe fonderie", domain: "Production", location: "Charleroi" },
+      { name: "Elif Kaya", title: "Acheteuse", domain: "Achats", location: "Charleroi" },
+    ],
+    officers: [
+      { name: "Marc Delcourt", role: "Administrateur délégué", since: "2011", gender: "M" },
+      { name: "Delcourt Invest SRL", role: "Administrateur", since: "2011", kind: "legal" },
+      { name: "Sophie Delcourt", role: "Administratrice", since: "2015", gender: "F" },
+    ],
+    potential: "élevé",
+    priority: 82,
+    verifiedSources: 6,
     contacts: [
       { name: "Marc Delcourt", role: "Administrateur délégué", roleGroup: "CEO", email: "m.delcourt@fonderie-delcourt.example" },
       { name: "Sophie Lambrechts", role: "Responsable comptabilité", roleGroup: "Comptabilité", email: "s.lambrechts@fonderie-delcourt.example" },
@@ -65,10 +92,38 @@ export const PROSPECTS: Prospect[] = [
     whyCallNow:
       "Nouveau hub de 12 000 m² aux Hauts-Sarts opérationnel en septembre — la paie de ±40 intérimaires passera en interne selon leur CFO.",
     signals: [
-      { date: "24 juil. 2026", title: "Ouverture confirmée du hub Hauts-Sarts : 12 000 m², ±40 postes logistiques", source: "La Libre Eco" },
-      { date: "2 juil. 2026", title: "Le CFO évoque l'internalisation de la gestion de paie dans une interview", source: "Trends-Tendances" },
-      { date: "18 juin 2026", title: "Campagne de recrutement caristes/dispatchers sur les réseaux", source: "LinkedIn" },
+      { date: "24 juil. 2026", title: "Ouverture confirmée du hub Hauts-Sarts : 12 000 m², ±40 postes logistiques", source: "La Libre Eco", type: "expansion", impact: "high", description: "Nouveau hub opérationnel en septembre, ±40 postes logistiques à pourvoir.", salesAngle: "40 recrutements d'un coup : proposer le pack onboarding + payroll avant l'ouverture." },
+      { date: "2 juil. 2026", title: "Le CFO évoque l'internalisation de la gestion de paie dans une interview", source: "Trends-Tendances", type: "contract_opportunity", impact: "high", description: "La paie de ±40 intérimaires passerait en interne selon le CFO.", salesAngle: "Ils reprennent la paie en interne : LE moment de pitcher l'accompagnement secrétariat social." },
+      { date: "18 juin 2026", title: "Campagne de recrutement caristes/dispatchers sur les réseaux", source: "LinkedIn", type: "talent", impact: "medium", description: "Campagne sponsorisée active depuis mi-juin sur LinkedIn et Facebook.", salesAngle: "Volume de candidatures à traiter — pitcher le support administratif RH." },
     ],
+    news: [
+      { title: "TransWal double sa capacité liégeoise", date: "24 juil. 2026", relevance: "L'ouverture de septembre est confirmée par la presse économique.", tier: "verified" },
+      { title: "Le e-commerce wallon dope la logistique des Hauts-Sarts", date: "10 juil. 2026", relevance: "Contexte sectoriel porteur : la croissance devrait durer.", tier: "cited" },
+    ],
+    attack: [
+      { type: "quick_win", title: "Pack onboarding septembre", action: "Proposer la prise en charge DIMONA + contrats des 40 recrutements du hub." },
+      { type: "core_bet", title: "Reprise de la paie internalisée", action: "Chiffrer l'accompagnement complet de l'internalisation évoquée par le CFO." },
+      { type: "decision_maker_hook", title: "Rendez-vous CFO", action: "Réagir à son interview : note comparative internalisation seule vs accompagnée." },
+    ],
+    crossSell: [
+      { product: "Payroll & administration salariale", justification: "±40 embauches en septembre + internalisation de la paie annoncée." },
+      { product: "Support juridique social", justification: "Transport : CP 140.03, temps de conduite et primes de nuit du hub à cadrer." },
+    ],
+    employees: [
+      { name: "Olivier Bastin", title: "CEO", domain: "Direction", location: "Liège" },
+      { name: "Carine Dupuis", title: "Comptable senior", domain: "Finance", location: "Liège" },
+      { name: "Peter Vandenbroeck", title: "Payroll Manager", domain: "RH", location: "Liège" },
+      { name: "Awa Diallo", title: "HR Business Partner", domain: "RH", location: "Liège" },
+      { name: "Maxime Lejeune", title: "Responsable hub Hauts-Sarts", domain: "Logistique", location: "Herstal" },
+      { name: "Sarah Peeters", title: "Dispatcher senior", domain: "Logistique", location: "Liège" },
+    ],
+    officers: [
+      { name: "Olivier Bastin", role: "CEO — Administrateur délégué", since: "2014", gender: "M" },
+      { name: "Bastin Holding SA", role: "Administrateur", since: "2014", kind: "legal" },
+    ],
+    potential: "élevé",
+    priority: 88,
+    verifiedSources: 7,
     contacts: [
       { name: "Olivier Bastin", role: "CEO", roleGroup: "CEO", email: "o.bastin@transwal.example" },
       { name: "Carine Dupuis", role: "Comptable senior", roleGroup: "Comptabilité", email: "c.dupuis@transwal.example" },
@@ -111,9 +166,23 @@ export const PROSPECTS: Prospect[] = [
     whyCallNow:
       "Recrute 3 menuisiers-poseurs depuis mai sans succès visible — les offres sont republiées toutes les 3 semaines.",
     signals: [
-      { date: "21 juil. 2026", title: "Republication des 3 offres de menuisier-poseur (3e cycle depuis mai)", source: "Site web" },
-      { date: "30 mai 2026", title: "Premier cycle d'offres menuisiers-poseurs publié", source: "Site web" },
+      { date: "21 juil. 2026", title: "Republication des 3 offres de menuisier-poseur (3e cycle depuis mai)", source: "Site web", type: "talent", impact: "high", description: "Trois cycles de publication sans embauche visible : le recrutement est bloqué.", salesAngle: "Le gérant perd des chantiers faute de bras — pitcher le support recrutement + contrats types." },
+      { date: "30 mai 2026", title: "Premier cycle d'offres menuisiers-poseurs publié", source: "Site web", type: "talent", impact: "low", description: "Début du besoin, jamais comblé depuis.", salesAngle: "" },
     ],
+    attack: [
+      { type: "quick_win", title: "Appel sur la 3e republication", action: "« Vos offres tournent depuis mai » — proposer un diagnostic recrutement gratuit." },
+      { type: "core_bet", title: "Payroll PME artisanale", action: "Reprendre la paie des 12 ouvriers (CP 124) gérée aujourd'hui par la fiduciaire." },
+      { type: "decision_maker_hook", title: "Gérant en direct", action: "PME familiale : viser Bernard Hautecoeur directement, pas d'intermédiaire." },
+    ],
+    crossSell: [
+      { product: "RH à la demande", justification: "Pas de fonction RH interne ; le recrutement bloqué le prouve." },
+    ],
+    employees: [
+      { name: "Bernard Hautecoeur", title: "Gérant", domain: "Direction", location: "Verviers" },
+    ],
+    potential: "moyen",
+    priority: 54,
+    verifiedSources: 2,
     contacts: [
       { name: "Bernard Hautecoeur", role: "Gérant", roleGroup: "CEO", email: "b.hautecoeur@hautecoeur.example" },
       { name: "Martine Collard", role: "Comptable externe", roleGroup: "Comptabilité", email: "m.collard@fidu-collard.example" },
@@ -134,10 +203,36 @@ export const PROSPECTS: Prospect[] = [
     whyCallNow:
       "Marché public de 14 M€ remporté en juin (éclairage LED provincial) — montée en charge chantiers dès la rentrée.",
     signals: [
-      { date: "17 juil. 2026", title: "Attribution confirmée du marché LED provincial (14 M€, 3 ans)", source: "Le Soir" },
-      { date: "5 juil. 2026", title: "5 offres publiées : électriciens industriels, 2 chefs de chantier", source: "Site web" },
-      { date: "11 juin 2026", title: "Levée de fonds growth de 4 M€ auprès de W.IN.G", source: "Trends-Tendances" },
+      { date: "17 juil. 2026", title: "Attribution confirmée du marché LED provincial (14 M€, 3 ans)", source: "Le Soir", type: "contract_opportunity", impact: "high", description: "Marché public de 14 M€ sur 3 ans ; montée en charge chantiers dès la rentrée.", salesAngle: "Un marché public impose des équipes en règle au jour 1 — DIMONA, CP 149.01, détachements." },
+      { date: "5 juil. 2026", title: "5 offres publiées : électriciens industriels, 2 chefs de chantier", source: "Site web", type: "talent", impact: "medium", description: "Recrutement technique lancé pour staffer le marché LED.", salesAngle: "Proposer contrats + onboarding des profils chantier avant la rentrée." },
+      { date: "11 juin 2026", title: "Levée de fonds growth de 4 M€ auprès de W.IN.G", source: "Trends-Tendances", type: "fundraising", impact: "medium", description: "Levée destinée à l'expansion wallonne.", salesAngle: "Du cash pour structurer : le moment de vendre l'accompagnement RH complet." },
     ],
+    news: [
+      { title: "InfraGreen rafle le marché LED provincial", date: "17 juil. 2026", relevance: "Le contrat qui déclenche toute la montée en charge.", tier: "verified" },
+    ],
+    attack: [
+      { type: "quick_win", title: "Checklist conformité marché public", action: "Offrir la checklist sociale « chantier public » — porte d'entrée sans engagement." },
+      { type: "core_bet", title: "Payroll chantiers 3 ans", action: "Contrat aligné sur la durée du marché LED (3 ans, effectif en croissance)." },
+      { type: "decision_maker_hook", title: "CEO post-levée", action: "Isabelle Marchal structure la boîte après la levée : pitcher la RH externalisée comme accélérateur." },
+    ],
+    crossSell: [
+      { product: "Payroll & administration salariale", justification: "Effectif chantier en forte croissance dès la rentrée." },
+      { product: "Support juridique social", justification: "Marché public : obligations sociales strictes et sous-traitance à encadrer." },
+    ],
+    employees: [
+      { name: "Isabelle Marchal", title: "CEO", domain: "Direction", location: "Mons" },
+      { name: "Thomas Petit", title: "Responsable finance", domain: "Finance", location: "Mons" },
+      { name: "Nadia Bouziane", title: "HR & Payroll Officer", domain: "RH", location: "Mons" },
+      { name: "Céline Devos", title: "Talent Acquisition Lead", domain: "RH", location: "Mons" },
+      { name: "Bruno Van Acker", title: "Directeur chantiers", domain: "Opérations", location: "Charleroi" },
+    ],
+    officers: [
+      { name: "Isabelle Marchal", role: "CEO — Administratrice déléguée", since: "2019", gender: "F" },
+      { name: "W.IN.G by Digital Wallonia", role: "Administrateur", since: "2026", kind: "legal" },
+    ],
+    potential: "élevé",
+    priority: 85,
+    verifiedSources: 6,
     contacts: [
       { name: "Isabelle Marchal", role: "CEO", roleGroup: "CEO", email: "i.marchal@infragreen.example" },
       { name: "Thomas Petit", role: "Responsable finance", roleGroup: "Comptabilité", email: "t.petit@infragreen.example" },
@@ -164,9 +259,28 @@ export const PROSPECTS: Prospect[] = [
     whyCallNow:
       "Ouvre son 4e atelier (Mouscron) en octobre — recrutements boulangers et vendeuses en cours, aucune structure RH interne.",
     signals: [
-      { date: "26 juil. 2026", title: "Annonce de l'ouverture du 4e atelier à Mouscron (octobre)", source: "L'Avenir" },
-      { date: "10 juil. 2026", title: "4 offres en vitrine et sur le site : 2 boulangers, 2 vendeuses", source: "Site web" },
+      { date: "26 juil. 2026", title: "Annonce de l'ouverture du 4e atelier à Mouscron (octobre)", source: "L'Avenir", type: "expansion", impact: "high", description: "Quatrième point de vente, sans structure RH interne pour absorber la croissance.", salesAngle: "4 ateliers, 0 RH : la paie multi-sites devient ingérable à la main." },
+      { date: "10 juil. 2026", title: "4 offres en vitrine et sur le site : 2 boulangers, 2 vendeuses", source: "Site web", type: "talent", impact: "medium", description: "Recrutements en cours pour Mouscron, gérés par le patron lui-même.", salesAngle: "Proposer contrats types + DIMONA pour l'ouverture d'octobre." },
     ],
+    news: [
+      { title: "Pain d'Antan s'installe à Mouscron", date: "26 juil. 2026", relevance: "L'ouverture d'octobre est datée — l'appel doit partir avant.", tier: "verified" },
+    ],
+    attack: [
+      { type: "quick_win", title: "Pack ouverture Mouscron", action: "Contrats + affiliations du 4e atelier, clé en main pour octobre." },
+      { type: "core_bet", title: "Paie multi-sites", action: "Centraliser la paie des 4 ateliers (CP 118.03, flexi-jobs vente)." },
+      { type: "decision_maker_hook", title: "Patron-boulanger", action: "Passer au fournil de Tournai avant 10 h — décideur unique, terrain." },
+    ],
+    crossSell: [
+      { product: "Gestion flexi-jobs", justification: "Vendeuses en flexi sur les 4 points de vente." },
+    ],
+    employees: [],
+    officers: [
+      { name: "Pascal Duriez", role: "Gérant", since: "2009", gender: "M" },
+      { name: "Duriez & Fils SRL", role: "Administrateur", since: "2018", kind: "legal" },
+    ],
+    potential: "moyen",
+    priority: 71,
+    verifiedSources: 4,
     contacts: [],
     otherContactsCount: 0,
     financials: fin(
@@ -204,10 +318,35 @@ export const PROSPECTS: Prospect[] = [
     whyCallNow:
       "Reprise de la flotte de Muller Trans (11 chauffeurs à intégrer au 1er septembre) — harmonisation des barèmes à gérer.",
     signals: [
-      { date: "22 juil. 2026", title: "Rachat de la flotte Muller Trans finalisé : 11 chauffeurs repris", source: "L'Avenir Luxembourg" },
-      { date: "8 juil. 2026", title: "Offre publiée : gestionnaire administratif transport", source: "Site web" },
-      { date: "19 juin 2026", title: "Extension du dépôt de Weyler autorisée (permis accordé)", source: "Le Soir" },
+      { date: "22 juil. 2026", title: "Rachat de la flotte Muller Trans finalisé : 11 chauffeurs repris", source: "L'Avenir Luxembourg", type: "acquisition", impact: "high", description: "Reprise au 1er septembre ; deux conventions et deux barèmes à fusionner.", salesAngle: "11 chauffeurs repris = harmonisation CP 140.03 obligatoire — l'expertise à vendre telle quelle." },
+      { date: "8 juil. 2026", title: "Offre publiée : gestionnaire administratif transport", source: "Site web", type: "talent", impact: "low", description: "Ils cherchent un administratif pour absorber la charge — signe que ça déborde.", salesAngle: "Alternative à l'embauche : externaliser l'administratif social." },
+      { date: "19 juin 2026", title: "Extension du dépôt de Weyler autorisée (permis accordé)", source: "Le Soir", type: "expansion", impact: "medium", description: "Permis accordé pour doubler la surface du dépôt.", salesAngle: "" },
     ],
+    news: [
+      { title: "Bodart reprend la flotte de Muller Trans", date: "22 juil. 2026", relevance: "La reprise du 1er septembre fixe l'échéance de l'appel.", tier: "verified" },
+    ],
+    attack: [
+      { type: "quick_win", title: "Audit harmonisation barèmes", action: "Diagnostic gratuit des écarts salariaux entre les deux flottes avant le 1er septembre." },
+      { type: "core_bet", title: "Payroll transport complet", action: "Reprendre la paie des 60+ roulants (primes, temps de conduite, nuits)." },
+      { type: "decision_maker_hook", title: "François Bodart", action: "Féliciter pour la reprise, ouvrir sur le casse-tête des barèmes fusionnés." },
+    ],
+    crossSell: [
+      { product: "Support juridique social", justification: "Transfert conventionnel des 11 contrats repris (CCT 32bis)." },
+      { product: "Payroll & administration salariale", justification: "Volume roulants en hausse + un administratif qui manque." },
+    ],
+    employees: [
+      { name: "François Bodart", title: "Administrateur délégué", domain: "Direction", location: "Arlon" },
+      { name: "Anne-Sophie Gérard", title: "Responsable comptabilité", domain: "Finance", location: "Arlon" },
+      { name: "Luc Thiry", title: "Gestionnaire paie & flotte", domain: "RH", location: "Arlon" },
+      { name: "Damien Muller", title: "Chef de flotte (ex-Muller Trans)", domain: "Opérations", location: "Weyler" },
+    ],
+    officers: [
+      { name: "François Bodart", role: "Administrateur délégué", since: "2008", gender: "M" },
+      { name: "Marie-Claire Bodart", role: "Administratrice", since: "2008", gender: "F" },
+    ],
+    potential: "moyen",
+    priority: 76,
+    verifiedSources: 5,
     contacts: [
       { name: "François Bodart", role: "Administrateur délégué", roleGroup: "CEO", email: "f.bodart@bodart-cie.example" },
       { name: "Anne-Sophie Gérard", role: "Responsable comptabilité", roleGroup: "Comptabilité", email: "as.gerard@bodart-cie.example" },
@@ -233,10 +372,34 @@ export const PROSPECTS: Prospect[] = [
     whyCallNow:
       "Double sa capacité export US après un contrat retail signé en juin — équipe production passera en 2×8 dès novembre.",
     signals: [
-      { date: "29 juil. 2026", title: "Contrat retail US signé : la production passera en 2 équipes dès novembre", source: "De Tijd" },
-      { date: "14 juil. 2026", title: "6 offres : opérateurs de production, 1 team leader, 1 qualité", source: "Site web" },
-      { date: "23 juin 2026", title: "Investissement de 2,1 M€ dans une nouvelle ligne d'enrobage", source: "Made in Oost-Vlaanderen" },
+      { date: "29 juil. 2026", title: "Contrat retail US signé : la production passera en 2 équipes dès novembre", source: "De Tijd", type: "contract_opportunity", impact: "high", description: "Contrat export majeur ; passage en 2×8 dès novembre.", salesAngle: "Le 2×8 en novembre impose primes d'équipe et nouveaux horaires — à cadrer avant, pas après." },
+      { date: "14 juil. 2026", title: "6 offres : opérateurs de production, 1 team leader, 1 qualité", source: "Site web", type: "talent", impact: "medium", description: "Recrutement production lancé pour tenir le contrat US.", salesAngle: "Proposer le pack contrats + DIMONA pour les 6 embauches." },
+      { date: "23 juin 2026", title: "Investissement de 2,1 M€ dans une nouvelle ligne d'enrobage", source: "Made in Oost-Vlaanderen", type: "growth_signal", impact: "medium", description: "Capacité doublée sur l'enrobage.", salesAngle: "" },
     ],
+    news: [
+      { title: "Werrens décroche un contrat retail américain", date: "29 juil. 2026", relevance: "Fixe l'échéance de novembre pour le passage en équipes.", tier: "verified" },
+    ],
+    attack: [
+      { type: "quick_win", title: "Simulation primes 2×8", action: "Chiffrer gratuitement le surcoût social du passage en équipes (CP 118)." },
+      { type: "core_bet", title: "Payroll production NL/FR", action: "Paie bilingue des 60+ ouvriers avec régimes d'équipes dès novembre." },
+      { type: "decision_maker_hook", title: "HR-verantwoordelijke", action: "Contacter Dries Callens en néerlandais avec la simulation 2×8." },
+    ],
+    crossSell: [
+      { product: "Payroll & administration salariale", justification: "Passage en 2×8 : primes, nuits et horaires variables à gérer." },
+    ],
+    employees: [
+      { name: "Karel Werrens", title: "CEO", domain: "Direction", location: "Gand" },
+      { name: "Els De Smet", title: "Hoofd boekhouding", domain: "Finance", location: "Gand" },
+      { name: "Inge Vermeulen", title: "Payroll specialist", domain: "RH", location: "Gand" },
+      { name: "Dries Callens", title: "HR-verantwoordelijke", domain: "RH", location: "Gand" },
+    ],
+    officers: [
+      { name: "Karel Werrens", role: "CEO — Gedelegeerd bestuurder", since: "2005", gender: "M" },
+      { name: "Werrens Beheer BV", role: "Bestuurder", since: "2012", kind: "legal" },
+    ],
+    potential: "moyen",
+    priority: 74,
+    verifiedSources: 5,
     contacts: [
       { name: "Karel Werrens", role: "CEO", roleGroup: "CEO", email: "k.werrens@werrens.example" },
       { name: "Els De Smet", role: "Hoofd boekhouding", roleGroup: "Comptabilité", email: "e.desmet@werrens.example" },
@@ -263,9 +426,32 @@ export const PROSPECTS: Prospect[] = [
     whyCallNow:
       "Contrat de maintenance pluriannuel signé avec un acteur pharma de Gosselies — 8 techniciens à recruter avant fin d'année.",
     signals: [
-      { date: "25 juil. 2026", title: "Contrat de maintenance 5 ans signé (site pharma, Gosselies)", source: "L'Echo" },
-      { date: "16 juil. 2026", title: "8 offres de techniciens de maintenance publiées d'un coup", source: "Site web" },
+      { date: "25 juil. 2026", title: "Contrat de maintenance 5 ans signé (site pharma, Gosselies)", source: "L'Echo", type: "contract_opportunity", impact: "high", description: "Contrat pluriannuel avec un acteur pharma ; 8 techniciens à recruter avant fin d'année.", salesAngle: "Un contrat 5 ans = besoin de stabilité sociale ; vendre la paie sans surprise sur la durée." },
+      { date: "16 juil. 2026", title: "8 offres de techniciens de maintenance publiées d'un coup", source: "Site web", type: "talent", impact: "high", description: "Huit postes ouverts simultanément — du jamais vu pour cette PME.", salesAngle: "8 embauches d'un coup : contrats, DIMONA et onboarding à industrialiser." },
     ],
+    news: [
+      { title: "Ateliers Maréchal partenaire maintenance d'un site pharma", date: "25 juil. 2026", relevance: "La perte de 2023 est derrière ; le contrat sécurise 5 ans de revenus.", tier: "cited" },
+    ],
+    attack: [
+      { type: "quick_win", title: "Pack 8 embauches", action: "Prendre en charge contrats + DIMONA des 8 techniciens avant fin d'année." },
+      { type: "core_bet", title: "Payroll maintenance", action: "Paie des équipes techniques avec astreintes et déplacements (CP 111)." },
+      { type: "decision_maker_hook", title: "Rassurer après 2023", action: "La perte de 2023 est visible aux comptes : vendre la prévisibilité des coûts sociaux." },
+    ],
+    crossSell: [
+      { product: "RH à la demande", justification: "Pas de RH interne pour absorber 8 recrutements simultanés." },
+    ],
+    employees: [
+      { name: "Vincent Maréchal", title: "Administrateur délégué", domain: "Direction", location: "Namur" },
+      { name: "Chantal Focan", title: "Comptable", domain: "Finance", location: "Namur" },
+      { name: "Rachid Benali", title: "HR Generalist", domain: "RH", location: "Namur" },
+    ],
+    officers: [
+      { name: "Vincent Maréchal", role: "Administrateur délégué", since: "2003", gender: "M" },
+      { name: "Bernadette Focan", role: "Administratrice", since: "2003", gender: "F" },
+    ],
+    potential: "moyen",
+    priority: 65,
+    verifiedSources: 4,
     contacts: [
       { name: "Vincent Maréchal", role: "Administrateur délégué", roleGroup: "CEO", email: "v.marechal@ateliers-marechal.example" },
       { name: "Chantal Focan", role: "Comptable", roleGroup: "Comptabilité", email: "c.focan@ateliers-marechal.example" },
@@ -291,9 +477,28 @@ export const PROSPECTS: Prospect[] = [
     whyCallNow:
       "Fusion avec le cabinet de Rixensart au 1er octobre — passage de 12 à 21 salariés, deux régimes de paie à unifier.",
     signals: [
-      { date: "27 juil. 2026", title: "Fusion annoncée avec le cabinet vétérinaire de Rixensart (effectif : 12 → 21)", source: "L'Avenir BW" },
-      { date: "3 juil. 2026", title: "2 offres : assistant(e) vétérinaire, secrétaire médicale", source: "Site web" },
+      { date: "27 juil. 2026", title: "Fusion annoncée avec le cabinet vétérinaire de Rixensart (effectif : 12 → 21)", source: "L'Avenir BW", type: "acquisition", impact: "high", description: "Fusion au 1er octobre ; deux régimes de paie et deux règlements de travail à unifier.", salesAngle: "12 → 21 salariés et deux régimes de paie : l'unification est exactement notre métier." },
+      { date: "3 juil. 2026", title: "2 offres : assistant(e) vétérinaire, secrétaire médicale", source: "Site web", type: "talent", impact: "low", description: "Recrutements pour absorber la patientèle élargie.", salesAngle: "" },
     ],
+    attack: [
+      { type: "quick_win", title: "Diagnostic fusion", action: "Comparatif gratuit des deux régimes de paie avant le 1er octobre." },
+      { type: "core_bet", title: "Paie unifiée 21 salariés", action: "Reprendre la paie fusionnée (CP 336) avec harmonisation des avantages." },
+      { type: "decision_maker_hook", title: "Associée gérante", action: "Dr Rousseau gère la fusion en plus des consultations — vendre du temps récupéré." },
+    ],
+    crossSell: [
+      { product: "Support juridique social", justification: "Fusion : transfert de personnel et harmonisation des contrats." },
+    ],
+    employees: [
+      { name: "Dr Hélène Rousseau", title: "Associée gérante", domain: "Direction", location: "Wavre" },
+      { name: "Fabienne Docquier", title: "Secrétariat & comptabilité", domain: "Finance", location: "Wavre" },
+    ],
+    officers: [
+      { name: "Hélène Rousseau", role: "Associée gérante", since: "2016", gender: "F" },
+      { name: "Marc Istace", role: "Associé", since: "2016", gender: "M" },
+    ],
+    potential: "moyen",
+    priority: 58,
+    verifiedSources: 3,
     contacts: [
       { name: "Dr Hélène Rousseau", role: "Associée gérante", roleGroup: "CEO", email: "h.rousseau@vet-etangs.example" },
       { name: "Fabienne Docquier", role: "Secrétariat & comptabilité", roleGroup: "Comptabilité", email: "f.docquier@vet-etangs.example" },
@@ -318,9 +523,27 @@ export const PROSPECTS: Prospect[] = [
     whyCallNow:
       "Nouvelle ligne d'embouteillage livrée en août + saison des fêtes — recours massif aux flexi-jobs en préparation.",
     signals: [
-      { date: "30 juil. 2026", title: "Réception de la nouvelle ligne d'embouteillage (capacité ×2)", source: "La Meuse" },
-      { date: "12 juil. 2026", title: "Appel à flexi-jobs pour la saison automne-fêtes sur ses réseaux", source: "Facebook" },
+      { date: "30 juil. 2026", title: "Réception de la nouvelle ligne d'embouteillage (capacité ×2)", source: "La Meuse", type: "growth_signal", impact: "medium", description: "Capacité doublée juste avant la saison des fêtes.", salesAngle: "Plus de volume = plus de bras en haute saison ; anticiper l'administratif dès août." },
+      { date: "12 juil. 2026", title: "Appel à flexi-jobs pour la saison automne-fêtes sur ses réseaux", source: "Facebook", type: "talent", impact: "medium", description: "Recours massif aux flexi-jobs en préparation pour l'automne.", salesAngle: "Les flexi-jobs = DIMONA en rafale et contrats courts — pitcher la gestion flexi clé en main." },
     ],
+    attack: [
+      { type: "quick_win", title: "Pack flexi saison des fêtes", action: "Gérer les DIMONA et contrats flexi de la saison — offre datée, urgente." },
+      { type: "core_bet", title: "Paie brasserie année pleine", action: "Reprendre la paie fixe + flexi (CP 118) avec les pics saisonniers." },
+      { type: "decision_maker_hook", title: "Fondateur multi-casquettes", action: "Grégory Lhoest brasse ET gère l'administratif : vendre des heures rendues." },
+    ],
+    crossSell: [
+      { product: "Gestion flexi-jobs", justification: "Le modèle saisonnier repose entièrement sur les flexi." },
+    ],
+    employees: [
+      { name: "Grégory Lhoest", title: "Fondateur & gérant", domain: "Direction", location: "Huy" },
+      { name: "Aurélie Mathieu", title: "Office manager", domain: "Finance", location: "Huy" },
+    ],
+    officers: [
+      { name: "Grégory Lhoest", role: "Gérant", since: "2017", gender: "M" },
+    ],
+    potential: "moyen",
+    priority: 62,
+    verifiedSources: 4,
     contacts: [
       { name: "Grégory Lhoest", role: "Fondateur & gérant", roleGroup: "CEO", email: "g.lhoest@brasserieduperron.example" },
       { name: "Aurélie Mathieu", role: "Office manager (compta & paie)", roleGroup: "Comptabilité", email: "a.mathieu@brasserieduperron.example" },
@@ -361,9 +584,29 @@ export const PROSPECTS: Prospect[] = [
     whyCallNow:
       "Saison des plantations + contrat avec 3 nouvelles communes — pic de 15 saisonniers à gérer dès septembre.",
     signals: [
-      { date: "23 juil. 2026", title: "Marchés d'entretien remportés dans 3 communes flamandes", source: "Krant van West-Vlaanderen" },
-      { date: "6 juil. 2026", title: "Appel à 15 ouvriers saisonniers pour la saison de plantation", source: "Site web" },
+      { date: "23 juil. 2026", title: "Marchés d'entretien remportés dans 3 communes flamandes", source: "Krant van West-Vlaanderen", type: "contract_opportunity", impact: "medium", description: "Trois marchés communaux pluriannuels d'entretien d'espaces verts.", salesAngle: "Marchés publics = personnel en règle exigé ; vendre la conformité sociale." },
+      { date: "6 juil. 2026", title: "Appel à 15 ouvriers saisonniers pour la saison de plantation", source: "Site web", type: "talent", impact: "high", description: "Pic de 15 saisonniers dès septembre pour la saison de plantation.", salesAngle: "15 saisonniers = DIMONA en rafale et contrats courts — la charge administrative explose." },
     ],
+    attack: [
+      { type: "quick_win", title: "Pack saisonniers septembre", action: "DIMONA + contrats des 15 saisonniers, clé en main avant la saison." },
+      { type: "core_bet", title: "Paie horticole année pleine", action: "Fixe + saisonniers (CP 145) avec les pics de plantation." },
+      { type: "decision_maker_hook", title: "Zaakvoerder en NL", action: "Approche en néerlandais, angle marchés communaux gagnés." },
+    ],
+    crossSell: [
+      { product: "Gestion saisonniers", justification: "Deux pics annuels de main-d'œuvre courte durée." },
+    ],
+    employees: [
+      { name: "Wim Van Damme", title: "Zaakvoerder", domain: "Direction", location: "Roulers" },
+      { name: "Sofie Declerck", title: "Boekhouding", domain: "Finance", location: "Roulers" },
+      { name: "Lore Vanhee", title: "Personeelszaken", domain: "RH", location: "Roulers" },
+    ],
+    officers: [
+      { name: "Wim Van Damme", role: "Zaakvoerder", since: "2010", gender: "M" },
+      { name: "Van Damme Groen BV", role: "Bestuurder", since: "2019", kind: "legal" },
+    ],
+    potential: "moyen",
+    priority: 66,
+    verifiedSources: 4,
     contacts: [
       { name: "Wim Van Damme", role: "Zaakvoerder", roleGroup: "CEO", email: "w.vandamme@vandamme-groen.example" },
       { name: "Sofie Declerck", role: "Boekhouding", roleGroup: "Comptabilité", email: "s.declerck@vandamme-groen.example" },

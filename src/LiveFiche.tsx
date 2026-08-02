@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  AnnuaireBlock,
   ContactsBlock,
   Etablissements,
+  FicheSynthese,
   Financiere,
   HealthRow,
   HealthUnknownRow,
+  NewsBlock,
+  OfficersBlock,
   SignalList,
   WhyCall,
 } from "./Fiche";
@@ -64,6 +68,7 @@ function bodyFor(s: StepState, p: Prospect): React.ReactNode | null {
           <>
             {p.whyCallNow && <WhyCall text={p.whyCallNow} />}
             <SignalList signals={p.signals} />
+            {p.news && p.news.length > 0 && <NewsBlock news={p.news} />}
           </>
         );
       }
@@ -71,7 +76,19 @@ function bodyFor(s: StepState, p: Prospect): React.ReactNode | null {
 
     case "contacts":
       if (s.status === "done" || s.status === "warning") {
-        return <ContactsBlock contacts={p.contacts} otherCount={p.otherContactsCount} />;
+        return (
+          <>
+            <ContactsBlock contacts={p.contacts} otherCount={p.otherContactsCount} />
+            <AnnuaireBlock employees={p.employees ?? []} />
+            {p.officers && p.officers.length > 0 && <OfficersBlock officers={p.officers} />}
+          </>
+        );
+      }
+      return null;
+
+    case "fiche":
+      if (s.status === "done" && (p.attack || p.crossSell || p.potential)) {
+        return <FicheSynthese p={p} />;
       }
       return null;
 

@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { FinChart, fmtEur } from "./FinChart";
-import type { Contact, Financials, Signal } from "./types";
+import type {
+  Contact,
+  Employee,
+  Financials,
+  NewsItem,
+  Officer,
+  Prospect,
+  Signal,
+  SignalType,
+} from "./types";
 
 /**
  * Les blocs de la fiche signalétique. Ils ne sont plus rendus d'un seul
@@ -153,24 +162,227 @@ export function Etablissements({ f }: { f: Financials }) {
   );
 }
 
-/* ———— Signaux ———— */
+/* ———— Signaux (cartes typées — calqué sur ProspectSignals) ———— */
+
+const SIGNAL_TYPE_LABELS: Record<SignalType, string> = {
+  talent: "Recrutement / Croissance",
+  growth_signal: "Croissance",
+  decision_maker_change: "Changement décideur",
+  expansion: "Expansion",
+  acquisition: "Acquisition / Fusion",
+  fundraising: "Levée de fonds",
+  contract_opportunity: "Opportunité contrat",
+};
+
+const IMPACT_LABELS = {
+  high: { label: "Impact fort", cls: "imp-high" },
+  medium: { label: "Impact moyen", cls: "imp-med" },
+  low: { label: "Impact faible", cls: "imp-low" },
+} as const;
 
 export function SignalList({ signals }: { signals: Signal[] }) {
   if (signals.length === 0) {
     return <p className="empty-note">Aucun signal détecté sur la période.</p>;
   }
   return (
-    <ul className="signal-list">
-      {signals.map((s, i) => (
-        <li key={i} className="signal-item">
-          <span className="signal-date">{s.date}</span>
-          <span className="signal-title">{s.title}</span>
-          <span className="signal-source">
-            {s.source} <span aria-hidden="true" title="Lien source (démo)">↗</span>
+    <div className="signal-cards">
+      {signals.map((s, i) => {
+        const imp = s.impact ? IMPACT_LABELS[s.impact] : null;
+        return (
+          <div key={i} className="signal-card">
+            <div className="sig-head">
+              {s.type && <span className="sig-type">{SIGNAL_TYPE_LABELS[s.type]}</span>}
+              {imp && <span className={`sig-impact ${imp.cls}`}>{imp.label}</span>}
+            </div>
+            <div className="sig-title">{s.title}</div>
+            {s.description && <p className="sig-desc">{s.description}</p>}
+            {s.salesAngle && (
+              <p className="sig-angle">
+                <strong>Angle Sales :</strong> {s.salesAngle}
+              </p>
+            )}
+            <div className="sig-foot">
+              <span>{s.date}</span>
+              <span className="signal-source">
+                {s.source} <span aria-hidden="true" title="Lien source (démo)">↗</span>
+              </span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ———— Actualités (ProspectNews) ———— */
+
+export function NewsBlock({ news }: { news: NewsItem[] }) {
+  return (
+    <div className="fiche-section">
+      <h4>Actualités</h4>
+      <div className="news-list">
+        {news.map((n, i) => (
+          <div key={i} className="news-row">
+            <div className="news-main">
+              <span className="news-title">{n.title}</span>
+              <span className="news-date">{n.date}</span>
+            </div>
+            <p className="news-relevance">{n.relevance}</p>
+            <span className={`badge ${n.tier === "verified" ? "badge-good" : "badge-warn"}`}>
+              {n.tier === "verified" ? "✓ Vérifiée" : "◇ Citée"}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ———— Annuaire LinkedIn (ProspectDirectory) ———— */
+
+export function AnnuaireBlock({ employees }: { employees: Employee[] }) {
+  const [q, setQ] = useState("");
+
+  if (employees.length === 0) {
+    return (
+      <div className="fiche-section">
+        <h4>Décideurs &amp; annuaire LinkedIn</h4>
+        <p className="ann-empty">
+          Aucun employé LinkedIn pour l'instant. Relancez le scraping pour rafraîchir l'annuaire.
+        </p>
+      </div>
+    );
+  }
+
+  const nq = q.trim().toLowerCase();
+  const rows = nq
+    ? employees.filter((e) => `${e.name} ${e.title} ${e.domain}`.toLowerCase().includes(nq))
+    : employees;
+
+  return (
+    <div className="fiche-section">
+      <h4>
+        Décideurs &amp; annuaire LinkedIn <span className="muted">— {employees.length}</span>
+      </h4>
+      <input
+        className="search ann-search"
+        type="search"
+        placeholder="Filtrer l'annuaire…"
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        aria-label="Filtrer l'annuaire"
+      />
+      {rows.length === 0 ? (
+        <p className="empty-note">Aucun résultat</p>
+      ) : (
+        <div className="ann-list">
+          {rows.map((e) => (
+            <div key={e.name} className="ann-row">
+              <span className="contact-avatar" aria-hidden="true">{initials(e.name)}</span>
+              <div className="contact-id">
+                <div className="contact-name">{e.name}</div>
+                <div className="contact-role">{e.title} · {e.location}</div>
+              </div>
+              <span className="badge badge-neutral ann-domain">{e.domain}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ———— Dirigeants Pappers (SectionOfficers) ———— */
+
+export function OfficersBlock({ officers }: { officers: Officer[] }) {
+  return (
+    <div className="fiche-section">
+      <h4>
+        Dirigeants et Représentants{" "}
+        <span className="muted">— Source : Pappers.be · {officers.length}</span>
+      </h4>
+      <div className="off-list">
+        {officers.map((o) => (
+          <div key={o.name} className="off-row">
+            <span className="contact-avatar off-avatar" aria-hidden="true">
+              {o.kind === "legal" ? "🏛" : initials(o.name)}
+            </span>
+            <div className="contact-id">
+              <div className="contact-name">{o.name}</div>
+              <div className="contact-role">{o.role}</div>
+            </div>
+            {o.gender && (
+              <span className="badge badge-neutral">{o.gender === "F" ? "Femme" : "Homme"}</span>
+            )}
+            <span className="badge badge-neutral">Depuis {o.since}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ———— Synthèse commerciale (Hero + KpiBar + AttackPlan + CrossSell) ———— */
+
+const ATTACK_LABELS = {
+  quick_win: "Quick win",
+  core_bet: "Cœur de cible",
+  decision_maker_hook: "Hook décideur",
+} as const;
+
+export function FicheSynthese({ p }: { p: Prospect }) {
+  return (
+    <>
+      <div className="syn-badges">
+        {p.potential && (
+          <span className={`badge ${p.potential === "élevé" ? "badge-good" : "badge-running"}`}>
+            Potentiel {p.potential}
           </span>
-        </li>
-      ))}
-    </ul>
+        )}
+        {p.healthScore !== null && (
+          <span className={`badge ${p.healthScore > 50 ? "badge-good" : "badge-risk"}`}>
+            Santé {p.healthBand}
+          </span>
+        )}
+        {p.verifiedSources !== undefined && (
+          <span className="badge badge-neutral">🛡 {p.verifiedSources} sources</span>
+        )}
+      </div>
+      <div className="mini-kpis">
+        <div className="mini-kpi"><span className="mini-kpi-value">{p.priority ?? "—"}</span><span className="mini-kpi-label">Priorité</span></div>
+        <div className="mini-kpi"><span className="mini-kpi-value">{p.signals.length}</span><span className="mini-kpi-label">Signaux</span></div>
+        <div className="mini-kpi"><span className="mini-kpi-value">{p.employees?.length ?? 0}</span><span className="mini-kpi-label">Décideurs</span></div>
+        <div className="mini-kpi"><span className="mini-kpi-value">{p.crossSell?.length ?? 0}</span><span className="mini-kpi-label">Cross-sell</span></div>
+        <div className="mini-kpi"><span className="mini-kpi-value">{p.attack?.length ?? 0}</span><span className="mini-kpi-label">Actions</span></div>
+      </div>
+      {p.attack && p.attack.length > 0 && (
+        <div className="fiche-section">
+          <h4>Plan d'attaque</h4>
+          <div className="attack-grid">
+            {p.attack.map((a) => (
+              <div key={a.type} className="attack-card">
+                <span className="sig-type">{ATTACK_LABELS[a.type]}</span>
+                <div className="attack-title">{a.title}</div>
+                <p className="attack-action">{a.action}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {p.crossSell && p.crossSell.length > 0 && (
+        <div className="fiche-section">
+          <h4>Opportunités de cross-sell</h4>
+          <div className="cross-grid">
+            {p.crossSell.map((c) => (
+              <div key={c.product} className="cross-card">
+                <div className="attack-title">{c.product}</div>
+                <p className="attack-action">{c.justification}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

@@ -13,10 +13,57 @@ export interface Contact {
   email: string;
 }
 
+/** Types de signaux — labels calqués sur signalConfig de l'app. */
+export type SignalType =
+  | "talent" // Recrutement / Croissance
+  | "growth_signal" // Croissance
+  | "decision_maker_change" // Changement décideur
+  | "expansion" // Expansion
+  | "acquisition" // Acquisition / Fusion
+  | "fundraising" // Levée de fonds
+  | "contract_opportunity"; // Opportunité contrat
+
 export interface Signal {
   date: string; // "12 juin 2026"
   title: string;
   source: string; // "L'Echo", "LinkedIn", "Le Soir", "Site web"
+  type?: SignalType;
+  impact?: "low" | "medium" | "high";
+  description?: string;
+  salesAngle?: string;
+}
+
+export interface NewsItem {
+  title: string;
+  date: string;
+  relevance: string; // pourquoi c'est pertinent
+  tier: "verified" | "cited";
+}
+
+export interface AttackReco {
+  type: "quick_win" | "core_bet" | "decision_maker_hook";
+  title: string;
+  action: string;
+}
+
+export interface CrossSell {
+  product: string;
+  justification: string;
+}
+
+export interface Employee {
+  name: string;
+  title: string;
+  domain: string; // "Direction", "Finance", "RH", "Production"…
+  location: string;
+}
+
+export interface Officer {
+  name: string;
+  role: string;
+  since: string; // "2011"
+  kind?: "legal"; // personne morale
+  gender?: "F" | "M";
 }
 
 /** Un exercice comptable (montants en k€), calqué sur l'historique Pappers. */
@@ -49,6 +96,14 @@ export interface Prospect {
   healthScore: number | null; // null = pas de données Pappers
   healthBand: "Solide" | "À risque" | "Inconnue";
   financials?: Financials; // absent si pas de données Pappers
+  news?: NewsItem[];
+  attack?: AttackReco[];
+  crossSell?: CrossSell[];
+  employees?: Employee[]; // annuaire LinkedIn
+  officers?: Officer[]; // dirigeants Pappers
+  potential?: "élevé" | "moyen"; // potentiel commercial de l'analyse
+  priority?: number; // priority_score
+  verifiedSources?: number;
   whyCallNow: string; // la ligne qui vend
   signals: Signal[];
   contacts: Contact[];
