@@ -79,7 +79,9 @@ function bodyFor(s: StepState, p: Prospect): React.ReactNode | null {
         return (
           <>
             <ContactsBlock contacts={p.contacts} otherCount={p.otherContactsCount} />
-            <AnnuaireBlock employees={p.employees ?? []} />
+            {/* Pas d'encadré « relancez le scraping » quand la page LinkedIn
+                n'existe pas : le message ContactsBlock suffit. */}
+            {(p.employees?.length ?? 0) > 0 && <AnnuaireBlock employees={p.employees!} />}
             {p.officers && p.officers.length > 0 && <OfficersBlock officers={p.officers} />}
           </>
         );

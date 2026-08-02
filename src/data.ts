@@ -435,7 +435,7 @@ export const PROSPECTS: Prospect[] = [
     attack: [
       { type: "quick_win", title: "Pack 8 embauches", action: "Prendre en charge contrats + DIMONA des 8 techniciens avant fin d'année." },
       { type: "core_bet", title: "Payroll maintenance", action: "Paie des équipes techniques avec astreintes et déplacements (CP 111)." },
-      { type: "decision_maker_hook", title: "Rassurer après 2023", action: "La perte de 2023 est visible aux comptes : vendre la prévisibilité des coûts sociaux." },
+      { type: "decision_maker_hook", title: "Rassurer après 2023", action: "La perte de 2023 est visible dans les comptes : vendre la prévisibilité des coûts sociaux." },
     ],
     crossSell: [
       { product: "RH à la demande", justification: "Pas de RH interne pour absorber 8 recrutements simultanés." },

@@ -305,7 +305,7 @@ export function OfficersBlock({ officers }: { officers: Officer[] }) {
         {officers.map((o) => (
           <div key={o.name} className="off-row">
             <span className="contact-avatar off-avatar" aria-hidden="true">
-              {o.kind === "legal" ? "🏛" : initials(o.name)}
+              {o.kind === "legal" ? "🏛️" : initials(o.name)}
             </span>
             <div className="contact-id">
               <div className="contact-name">{o.name}</div>
